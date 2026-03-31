@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CRM Dashboard - MD 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
@@ -137,6 +137,24 @@
   }
   @media (max-width:480px){
     .kpi-value{font-size:clamp(14px, 5vw, 22px) !important;word-break:break-word;line-height:1.1;}
+  }
+
+  @media (max-width: 768px) {
+    .kpi-row {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 10px !important;
+    }
+    .kpi-card {
+      padding: 14px 12px !important;
+    }
+    .kpi-value {
+      font-size: 20px !important;
+      word-break: break-word !important;
+      line-height: 1.2 !important;
+    }
+    .kpi-value[style*="font-size:32px"] {
+      font-size: 20px !important;
+    }
   }
 </style>
 </head>
