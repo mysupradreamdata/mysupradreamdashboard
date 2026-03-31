@@ -55,7 +55,7 @@
   .btn-nav:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
   .main{padding:20px 24px;display:flex;flex-direction:column;gap:16px;}
   .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);min-width:0;}
   .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
   .kpi-card.blue::before{background:var(--accent);}
   .kpi-card.green::before{background:var(--accent2);}
@@ -490,7 +490,8 @@ async function fetchData() {
     populateFilters()
     applyFilters()
 
-    document.getElementById('last-update').textContent = 'อัพเดต ' + new Date().toLocaleTimeString('th-TH') + ` (${allData.length} แถว)`
+    setTimeout(autoFitKPI, 50)
+  document.getElementById('last-update').textContent = 'อัพเดต ' + new Date().toLocaleTimeString('th-TH') + ` (${allData.length} แถว)`
     // แสดงข้อมูลแหล่งที่มาใน footer
     const el = document.getElementById('source-info')
     const totalEl = document.getElementById('source-total')
