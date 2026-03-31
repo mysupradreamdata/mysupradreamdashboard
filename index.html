@@ -11,7 +11,7 @@
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
   :root{--bg:#f0f6ff;--bg2:#ffffff;--bg3:#e8f0fe;--card:#ffffff;--border:#c5d8f8;--accent:#1a6ef7;--accent2:#0ea86a;--accent3:#d97706;--accent4:#ef4444;--text:#0f172a;--text2:#334155;--text3:#64748b;}
   *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{max-width:100%;overflow-x:hidden;}body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+  body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
   .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(26,110,247,.08);}
   .header-title{font-size:18px;font-weight:700;color:var(--accent);}
   .header-sub{font-size:12px;color:var(--text3);margin-top:2px;}
@@ -99,39 +99,38 @@
   .numInputWrapper input{color:var(--text) !important;}
   .flatpickr-day.nextMonthDay,.flatpickr-day.prevMonthDay{color:var(--text3) !important;opacity:0.4 !important;}
 
-  @media (max-width: 900px) {
-    *{box-sizing:border-box;max-width:100%;}
-    html,body{overflow-x:hidden;width:100%;}
+  @media (max-width:900px){
+    *{box-sizing:border-box;}
+    html,body{overflow-x:hidden;width:100%;max-width:100vw;}
     .main{padding:10px;gap:10px;}
-    .kpi-grid{grid-template-columns:1fr 1fr !important;gap:8px;}
-    .kpi-val{font-size:22px !important;word-break:break-all;}
-    .kpi-card{padding:12px;}
+    .kpi-grid{grid-template-columns:1fr 1fr !important;gap:8px;} .kpi-card{min-width:0;}
+    .kpi-val{font-size:20px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .two-col,div[style*="grid-template-columns:1fr 1fr 1fr"],div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important;}
-    div[style*="grid-template-columns:220px"],div[style*="grid-template-columns:180px"]{grid-template-columns:130px 1fr !important;}
+    div[style*="grid-template-columns:220px"],div[style*="grid-template-columns:180px"]{grid-template-columns:120px 1fr !important;}
     .filters{flex-wrap:wrap;padding:8px;gap:5px;}
     .filter-group{flex-wrap:wrap;gap:4px;}
     .btn-quick,.btn-nav,.btn-clear{font-size:11px;padding:5px 8px;}
-    .date-input{min-width:0 !important;width:140px;font-size:11px;}
+    .date-input{width:140px !important;min-width:0 !important;font-size:11px;}
     .card{padding:12px;overflow:hidden;}
     .card-title{font-size:12px;}
-    .nav-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+    .nav-tabs{overflow-x:auto;}
     .pie-wrap{height:140px !important;}
     .legend{flex-wrap:wrap !important;}
     .legend-item{font-size:11px;}
     .prod-table{font-size:11px;}
     .prod-table th,.prod-table td{padding:5px 4px;}
-    table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;}
-    /* Header ให้เต็มจอ */
-    div[style*="linear-gradient"]{flex-wrap:wrap !important;padding:10px 12px !important;gap:8px !important;}
-    div[style*="flex:1"]{flex:none !important;width:100% !important;max-width:100% !important;margin:0 !important;}
-    div[style*="font-size:32px"]{font-size:18px !important;}
-    div[style*="font-size:22px"]{font-size:14px !important;}
-    div[style*="height:22px"]{height:16px !important;}
-    div[style*="text-align:right"]{display:none;}
+    table{display:block;overflow-x:auto;width:100%;}
+    div[style*="linear-gradient"]{flex-wrap:wrap !important;padding:10px 12px !important;}
+    div[style*="flex:1;margin"]{flex:none !important;width:100% !important;max-width:100% !important;margin:4px 0 !important;}
+    div[style*="text-align:right"]{display:none !important;}
+    div[style*="font-size:32px"]{font-size:16px !important;}
+    div[style*="height:22px"]{height:14px !important;}
+    div[style*="height:16px"]{height:10px !important;}
+    #ml-emerald-label,#ml-diamond-label,#ml-100-label,#ml-150-label{font-size:8px !important;}
+    span[id$="-rem"]{font-size:7px !important;}
   }
   @media (max-width:480px){
-    .kpi-grid{grid-template-columns:1fr 1fr !important;}
-    .kpi-val{font-size:20px !important;}
+    .kpi-val{font-size:18px !important;}
   }
 </style>
 </head>
@@ -197,7 +196,7 @@
 <div class="filters">
   <div class="filter-group">
     <span class="filter-label">ทีม</span>
-    <select id="filter-team" onchange="populateFilters(); applyFilters()"><option value="">ทั้งหมด</option><option value="VVIP">VVIP</option><option value="ทีมอเวนเจอร์">ทีมอเวนเจอร์</option><option value="Admin">Admin</option></select>
+    <select id="filter-team" onchange="populateFilters(); applyFilters()"><option value="">ทั้งหมด</option><option value="VVIP">VVIP</option><option value="ทีมอเวนเจอร์">ทีมอเวนเจอร์</option><option value="Admin">Admin</option><option value="CRM">CRM (VVIP+อเวนเจอร์)</option></select>
   </div>
   <div class="filter-group">
     <span class="filter-label">พนักงาน</span>
@@ -221,7 +220,8 @@
     <div class="kpi-card blue"><div class="kpi-label">ยอดขายรวม</div><div class="kpi-value blue" id="kpi-total">—</div><div class="kpi-unit">บาท</div></div>
     <div class="kpi-card green"><div class="kpi-label">จำนวนออเดอร์</div><div class="kpi-value green" id="kpi-orders">—</div><div class="kpi-unit">รายการ</div></div>
     <div class="kpi-card amber"><div class="kpi-label">Basket Size เฉลี่ย</div><div class="kpi-value amber" id="kpi-basket">—</div><div class="kpi-unit">บาท/ออเดอร์</div></div>
-    <div class="kpi-card red"><div class="kpi-label">อัตราการปิด</div><div class="kpi-value red" id="kpi-close">—</div><div class="kpi-unit">%</div></div>
+    <div class="kpi-card" style="border-top:3px solid #7c3aed;"><div class="kpi-label">Upsell</div><div class="kpi-value" style="color:#7c3aed;font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;" id="kpi-upsell-orders">—</div><div class="kpi-unit">ออเดอร์</div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#7c3aed;margin-top:4px;" id="kpi-upsell-amt">—</div><div class="kpi-unit">บาท</div></div>
+
   </div>
 
   <div class="two-col">
@@ -333,6 +333,12 @@ function parseTs(str) {
   }
 
   return null
+}
+
+function shortFmt(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M'
+  if (n >= 1000) return (n/1000).toFixed(0) + 'K'
+  return n.toLocaleString('th-TH')
 }
 
 function fmt(n) { return Number(n).toLocaleString('th-TH', {maximumFractionDigits: 0}) }
@@ -500,12 +506,9 @@ async function fetchData() {
 }
 
 function populateFilters() {
-  const teams = [...new Set(allData.map(r => r['ทีม']).filter(Boolean))].sort()
+  // ไม่ overwrite team dropdown เพราะมี CRM (custom option) อยู่แล้ว
   const tsel = document.getElementById('filter-team')
   const tcur = tsel.value
-  while (tsel.options.length > 1) tsel.remove(1)
-  teams.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = stripNum(t); tsel.appendChild(o) })
-  if (teams.includes(tcur)) tsel.value = tcur
 
   const selectedTeam = document.getElementById('filter-team').value
   const agentData = selectedTeam
@@ -523,7 +526,9 @@ function getFiltered() {
   const team = document.getElementById('filter-team').value
   const agent = document.getElementById('filter-agent').value
   return allData.filter(r => {
-    if (team && r['ทีม'] !== team) return false
+    if (team === 'CRM') {
+      if (!['VVIP','ทีมอเวนเจอร์'].includes(r['ทีม'])) return false
+    } else if (team && r['ทีม'] !== team) return false
     if (agent && r['พนักงาน'] !== agent) return false
     if (filterFrom || filterTo) {
       const ts = parseTs(r['วันที่'])
@@ -581,13 +586,21 @@ function applyFilters() {
       if (labelEl) labelEl.style.left = leftPct
       if (remSpan) {
         const remaining = Math.max(m.val - yearTotal, 0)
-        remSpan.textContent = remaining > 0 ? 'เหลือ ' + fmt(remaining) : '✓ ผ่าน'
+        remSpan.textContent = remaining > 0 ? 'เหลือ ' + shortFmt(remaining) : '✓'
       }
     })
   }
   document.getElementById('kpi-orders').textContent = orders
   document.getElementById('kpi-basket').textContent = fmt(basket)
-  document.getElementById('kpi-close').textContent = closeRate.toFixed(1)
+
+  // Upsell KPI
+  const upsellRows = data.filter(r => r['Up'] === '1')
+  const upsellOrders = upsellRows.length
+  const upsellAmt = upsellRows.reduce((s,r) => s + num(r['ยอดอัพ'] || r['ยอดรวม']), 0)
+  const upsellOrdEl = document.getElementById('kpi-upsell-orders')
+  const upsellAmtEl = document.getElementById('kpi-upsell-amt')
+  if (upsellOrdEl) upsellOrdEl.textContent = upsellOrders
+  if (upsellAmtEl) upsellAmtEl.textContent = fmt(upsellAmt)
   document.getElementById('s-total').textContent = total
   document.getElementById('s-reach').textContent = data.filter(r => r['การชำระเงิน'] === 'COD').length
   document.getElementById('s-talk').textContent = '—'
@@ -707,7 +720,7 @@ function renderLine(labels, vals) {
   if (salesChart) salesChart.destroy()
   salesChart = new Chart(ctx, {
     type: 'line',
-    data: {labels, datasets: [{label: 'ยอดขาย', data: vals, backgroundColor: 'rgba(26,110,247,0.1)', borderColor: '#1a6ef7', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#1a6ef7', pointRadius: 4}]},
+    data: {labels, datasets: [{label: 'ยอดขาย', data: vals, backgroundColor: 'rgba(26,110,247,0.1)', borderColor: '#1a6ef7', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#1a6ef7', pointRadius: 0, pointHoverRadius: 4}]},
     options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {x: {ticks: {color: '#475569', font: {size: 10}}, grid: {color: 'rgba(0,0,0,0.06)'}}, y: {ticks: {color: '#475569', font: {size: 10}}, grid: {color: 'rgba(0,0,0,0.08)'}}}}
   })
 }
