@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Dashboard - MD 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  :root{--bg:#f0f6ff;--bg2:#ffffff;--bg3:#e8f0fe;--card:#ffffff;--border:#c5d8f8;--accent:#1a6ef7;--accent2:#0ea86a;--accent3:#d97706;--accent4:#ef4444;--text:#0f172a;--text2:#334155;--text3:#64748b;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'IBM Plex Sans Thai',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
+  .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(26,110,247,.08);}
+  .header-title{font-size:18px;font-weight:700;color:var(--accent);}
+  .header-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+  .dot{width:6px;height:6px;background:#fff;border-radius:50%;display:inline-block;margin-right:6px;animation:pulse 2s infinite;opacity:.8;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .nav-tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px;}
+  .nav-tab{background:transparent;border:none;border-bottom:3px solid transparent;color:var(--text3);padding:12px 18px;cursor:pointer;font-family:'IBM Plex Sans Thai',sans-serif;font-size:14px;font-weight:500;transition:all .15s;}
+  .nav-tab:hover{color:var(--text2);}
+  .nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .page{display:none;}.page.active{display:block;}
+  
+  
+  
+  
+  .agent-stat:last-child{border-bottom:none;}
+  .agent-stat-label{font-size:12px;color:var(--text3);}
+  .agent-stat-val{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--text);}
+  .agent-stat-val.blue{color:var(--accent);}
+  .agent-stat-val.green{color:var(--accent2);}
+  .agent-stat-val.amber{color:var(--accent3);}
+  
+  
+  
+  .sales-rank.gold{background:#f59e0b;color:#fff;}
+  .sales-rank.silver{background:#94a3b8;color:#fff;}
+  .sales-rank.bronze{background:#92400e;color:#fff;}
+  .filters{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .filter-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;}
+  .filter-group{display:flex;align-items:center;gap:8px;}
+  select,.date-input{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:13px;cursor:pointer;outline:none;}
+  select{min-width:150px;}
+  .date-input{min-width:200px;}
+  .btn-clear{background:transparent;border:1px solid var(--border);color:var(--text3);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-family:'IBM Plex Sans Thai',sans-serif;}
+  .btn-clear:hover{border-color:var(--accent4);color:var(--accent4);}
+  .btn-quick{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-family:'IBM Plex Sans Thai',sans-serif;transition:all .15s;}
+  .btn-quick:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-quick.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn-nav{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 14px;cursor:pointer;font-size:18px;line-height:1;transition:all .15s;}
+  .btn-nav:first-child{border-radius:8px 0 0 8px;}
+  .btn-nav:last-child{border-radius:0 8px 8px 0;}
+  .btn-nav:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .main{padding:20px 24px;display:flex;flex-direction:column;gap:16px;}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .kpi-card.blue::before{background:var(--accent);}
+  .kpi-card.green::before{background:var(--accent2);}
+  .kpi-card.amber::before{background:var(--accent3);}
+  .kpi-card.red::before{background:var(--accent4);}
+  .kpi-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+  .kpi-value{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;line-height:1;}
+  .kpi-value.blue{color:var(--accent);}.kpi-value.green{color:var(--accent2);}.kpi-value.amber{color:var(--accent3);}.kpi-value.red{color:var(--accent4);}
+  .kpi-unit{font-size:12px;color:var(--text3);margin-top:4px;}
+  .two-col{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .card-title{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px;}
+  .chart-wrap{position:relative;height:200px;}
+  .stat-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-name{color:var(--text2);font-size:13px;}
+  .stat-val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;color:var(--text);}
+  
+
+  .prod-table{width:100%;border-collapse:collapse;}
+  .prod-table th{text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;padding:6px 8px;border-bottom:2px solid var(--border);}
+  .prod-table td{padding:9px 8px;font-size:12px;border-bottom:1px solid var(--border);}
+  .prod-table tr:last-child td{border-bottom:none;}
+  .prod-table tr:hover td{background:var(--bg3);}
+  .prod-name{color:var(--text);font-weight:500;}
+  .prod-num{color:var(--text2);font-family:'IBM Plex Mono',monospace;}
+  .prod-total{color:var(--accent);font-family:'IBM Plex Mono',monospace;font-weight:600;}
+  .pie-wrap{position:relative;height:160px;margin-bottom:10px;}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;}
+  .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+  .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .empty{text-align:center;color:var(--text3);padding:30px;font-size:13px;}
+  .flatpickr-calendar{background:#fff !important;border:1px solid var(--border) !important;box-shadow:0 8px 24px rgba(0,0,0,.1) !important;}
+  .flatpickr-day{color:var(--text2) !important;}
+  .flatpickr-day:hover{background:var(--bg3) !important;}
+  .flatpickr-day.selected,.flatpickr-day.startRange,.flatpickr-day.endRange{background:var(--accent) !important;border-color:var(--accent) !important;color:#fff !important;}
+  .flatpickr-day.inRange{background:rgba(26,110,247,.15) !important;border-color:transparent !important;}
+  .flatpickr-months,.flatpickr-weekdays{background:#f8faff !important;}
+  .flatpickr-month,.flatpickr-weekday,.flatpickr-current-month{color:var(--text) !important;fill:var(--text) !important;}
+  .flatpickr-prev-month,.flatpickr-next-month{color:var(--text2) !important;fill:var(--text2) !important;}
+  .numInputWrapper input{color:var(--text) !important;}
+  .flatpickr-day.nextMonthDay,.flatpickr-day.prevMonthDay{color:var(--text3) !important;opacity:0.4 !important;}
+</style>
+</head>
+<body>
+
+<div style="background:linear-gradient(135deg,#1a6ef7,#0ea86a);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;">
+  <div>
+    <div style="font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px;">Mysupradream</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;">CRM Dashboard — MD 2026</div>
+  </div>
+  <div style="flex:1;margin:0 32px;">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+      <span style="font-size:12px;color:rgba(255,255,255,.8);">ยอดขายสะสม</span>
+      <span style="font-size:12px;color:rgba(255,255,255,.8);">เป้าหมาย 200,000,000 บาท</span>
+    </div>
+    <!-- milestone labels above bar -->
+    <div style="position:relative;height:32px;margin-bottom:2px;">
+      <div id="ml-emerald-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">💎 Emerald<br><span id="ml-emerald-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
+      <div id="ml-diamond-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">💎 Diamond<br><span id="ml-diamond-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
+      <div id="ml-100-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">100M<br><span id="ml-100-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
+      <div id="ml-150-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">150M<br><span id="ml-150-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
+    </div>
+    <!-- bar -->
+    <div style="position:relative;">
+      <div id="ml-emerald-line" style="position:absolute;top:0;width:2px;height:22px;background:rgba(255,255,255,.6);z-index:2;"></div>
+      <div id="ml-diamond-line" style="position:absolute;top:0;width:2px;height:22px;background:rgba(255,255,255,.6);z-index:2;"></div>
+      <div id="ml-100-line" style="position:absolute;top:0;width:2px;height:22px;background:rgba(255,255,255,.4);z-index:2;"></div>
+      <div id="ml-150-line" style="position:absolute;top:0;width:2px;height:22px;background:rgba(255,255,255,.4);z-index:2;"></div>
+      <div style="background:rgba(255,255,255,.25);border-radius:999px;height:22px;overflow:hidden;position:relative;">
+        <div id="sales-bar" style="height:100%;border-radius:999px;background:linear-gradient(90deg,#34d399,#1a6ef7);transition:width 1s ease;width:0%;position:relative;">
+          <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#fff;white-space:nowrap;" id="sales-bar-pct">0%</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#fff;" id="sales-bar-val">— บาท</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.7);" id="sales-bar-remain">คงเหลือถึงเป้า —</span>
+    </div>
+  </div>
+  <div style="text-align:right">
+    <div><span class="dot"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.7)" id="last-update">กำลังโหลด...</span></div>
+    <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">อัพเดตอัตโนมัติทุก 30 วิ</div>
+  </div>
+</div>
+<div class="header">
+  <div>
+    <div class="header-title">📊 CRM Dashboard — MD 2026</div>
+    <div class="header-sub">บีทออเดอร์ MD 2026</div>
+  </div>
+  <div style="text-align:right">
+    <div><span class="dot"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)" id="last-update">กำลังโหลด...</span></div>
+    <div style="font-size:11px;color:var(--text3);margin-top:2px">อัพเดตอัตโนมัติทุก 30 วิ</div>
+  </div>
+</div>
+
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showPage('overview')">📊 ภาพรวม</button>
+
+</div>
+<div id="page-overview" class="page active">
+
+<div class="filters">
+  <div class="filter-group">
+    <span class="filter-label">ทีม</span>
+    <select id="filter-team" onchange="populateFilters(); applyFilters()"><option value="">ทั้งหมด</option><option value="VVIP">VVIP</option><option value="ทีมอเวนเจอร์">ทีมอเวนเจอร์</option><option value="Admin">Admin</option></select>
+  </div>
+  <div class="filter-group">
+    <span class="filter-label">พนักงาน</span>
+    <select id="filter-agent" onchange="applyFilters()"><option value="">ทั้งหมด</option></select>
+  </div>
+  <div class="filter-group" style="gap:6px">
+    <button class="btn-quick" onclick="shiftMonth(-1)">&#8249; เดือนที่แล้ว</button>
+    <button class="btn-quick" id="btn-month" onclick="setQuick('month')">เดือนนี้</button>
+    <button class="btn-quick" onclick="shiftDay(-1)" id="btn-prevday">&#8249; วัน</button>
+    <input class="date-input" id="date-range" placeholder="เลือกช่วงวันที่" readonly style="min-width:150px;text-align:center;">
+    <button class="btn-quick" onclick="shiftDay(1)">วัน &#8250;</button>
+    <button class="btn-quick" onclick="shiftMonth(1)">เดือนหน้า &#8250;</button>
+    <button class="btn-quick" id="btn-today" onclick="setQuick('today')">วันนี้</button>
+    <button class="btn-quick" id="btn-year" onclick="setQuick('year')">ปีนี้</button>
+  </div>
+  <button class="btn-clear" onclick="clearFilters()">✕ ล้าง</button>
+</div>
+
+<div class="main">
+  <div class="kpi-row">
+    <div class="kpi-card blue"><div class="kpi-label">ยอดขายรวม</div><div class="kpi-value blue" id="kpi-total">—</div><div class="kpi-unit">บาท</div></div>
+    <div class="kpi-card green"><div class="kpi-label">จำนวนออเดอร์</div><div class="kpi-value green" id="kpi-orders">—</div><div class="kpi-unit">รายการ</div></div>
+    <div class="kpi-card amber"><div class="kpi-label">Basket Size เฉลี่ย</div><div class="kpi-value amber" id="kpi-basket">—</div><div class="kpi-unit">บาท/ออเดอร์</div></div>
+    <div class="kpi-card red"><div class="kpi-label">อัตราการปิด</div><div class="kpi-value red" id="kpi-close">—</div><div class="kpi-unit">%</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">ยอดขายรายวัน</div>
+      <div class="chart-wrap"><canvas id="salesChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">สถิติการโทร</div>
+      <div class="stat-row"><span class="stat-name">โทรทั้งหมด</span><span class="stat-val" id="s-total">—</span></div>
+      <div class="stat-row"><span class="stat-name">ได้คุย (COD)</span><span class="stat-val" id="s-reach">—</span></div>
+      <div class="stat-row"><span class="stat-name">Talktime</span><span class="stat-val" id="s-talk">—</span></div>
+      <div class="stat-row"><span class="stat-name">สายโทรออก</span><span class="stat-val" id="s-out">—</span></div>
+    </div>
+  </div>
+
+
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+    <div class="card">
+      <div class="card-title">CRM ยอดรี</div>
+      <div style="display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center;">
+        <div style="position:relative;height:220px;"><canvas id="reOrderPie"></canvas></div>
+        <div>
+          <div class="legend" id="re-order-legend" style="flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">สัดส่วนยอดแต่ละทีม</div>
+      <div class="pie-wrap"><canvas id="teamPieChart"></canvas></div>
+      <div class="legend" id="team-pie-legend"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">สินค้าแยกประเภท</div>
+      <div class="pie-wrap"><canvas id="pieChart"></canvas></div>
+      <div class="legend" id="pie-legend"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">รายละเอียดสินค้า — ยอดรี / จำนวนออเดอร์ / ยอดขาย</div>
+    <table class="prod-table">
+      <thead><tr><th>สินค้า</th><th>ยอดรี</th><th>จำนวนออเดอร์</th><th>ยอดขายรวม (บาท)</th></tr></thead>
+      <tbody id="prod-tbody"><tr><td colspan="4" class="empty">กำลังโหลด...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</div><!-- end page-overview -->
+
+<script>
+const API_KEY = 'AIzaSyBWePiHaVyYTvy-IlXFbFZ6qKebJcrbXYQ'
+const SOURCES = [
+  { id: '1XDeOGwkyD3R5vIe0WXQLbjcRXFS8pDnlv2B-S1nSfis', sheet: 'CRM Orders' },
+  { id: '1XDeOGwkyD3R5vIe0WXQLbjcRXFS8pDnlv2B-S1nSfis', sheet: 'CRM Orders 2025' },
+  { id: '1XDeOGwkyD3R5vIe0WXQLbjcRXFS8pDnlv2B-S1nSfis', sheet: 'Admin Orders' },
+]
+// สีตามชื่อสินค้า
+const PRODUCT_COLORS = {
+  'เบต้าออยล์ (10)': '#f59e0b',
+  'Labfarm': '#15803d',
+  'เบต้าแคล (10)': '#38bdf8',
+  'เบต้าไลฟ์ (10)': '#92400e',
+  'เบต้าเฮิร์บ (10)': '#7c3aed',
+  'เบต้าลีฟ (10)': '#ef4444',
+  'เบต้าอี (10)': '#1e40af',
+  'เบต้าเอ็กซ์ (10)': '#65a30d',
+}
+const COLORS = ['#f59e0b','#15803d','#38bdf8','#92400e','#7c3aed','#ef4444','#1e40af','#65a30d']
+
+function getProductColor(name, index) {
+  for (const [key, color] of Object.entries(PRODUCT_COLORS)) {
+    if (name && name.includes(key.split(' ')[0]) && name.includes(key.split(' ')[1] || '')) {
+      return color
+    }
+    if (name === key) return color
+  }
+  return COLORS[index % COLORS.length]
+}
+
+let allData = [], salesChart = null, salesByAgentChart = null, pieChart = null, rePieChart = null, teamPieChart = null
+let filterFrom = null, filterTo = null
+
+// รองรับหลาย format: "2026-01-01 0:00:0", "1/1/2026", "30/3/2026"
+function parseTs(str) {
+  if (!str) return null
+  const s = String(str).trim()
+  if (!s) return null
+
+  // format "2026-01-01" หรือ "2026-01-01 0:00:0"
+  if (s.includes('-')) {
+    const dt = new Date(s.split(' ')[0])
+    if (!isNaN(dt)) { dt.setHours(0,0,0,0); return dt.getTime() }
+  }
+
+  // format D/M/YYYY หรือ D/M/YY
+  if (s.includes('/')) {
+    const p = s.split('/')
+    if (p.length >= 3) {
+      const d = parseInt(p[0]), m = parseInt(p[1])
+      let y = parseInt(p[2])
+      if (!isNaN(d) && !isNaN(m) && !isNaN(y)) {
+        if (y < 100) y += 2000
+        const dt = new Date(y, m-1, d)
+        dt.setHours(0,0,0,0)
+        return dt.getTime()
+      }
+    }
+  }
+
+  return null
+}
+
+function fmt(n) { return Number(n).toLocaleString('th-TH', {maximumFractionDigits: 0}) }
+function stripNum(name) {
+  if (!name) return name
+  // ตัด prefix เลข เช่น "06 น็อตเตอร์" → "น็อตเตอร์"
+  name = name.replace(/^\d+\s*/, '')
+  // ตัด admin_ prefix
+  name = name.replace(/^admin_/, '')
+  return name
+}
+function num(v) { return parseFloat((v || '').replace(/,/g, '')) || 0 }
+
+// flatpickr ใช้ D/M/Y ตรงกับ Sheet
+const picker = flatpickr('#date-range', {
+  mode: 'range',
+  dateFormat: 'd/m/Y',
+  allowInput: false,
+  onChange: function(dates) {
+    if (dates[0]) { const f = new Date(dates[0]); f.setHours(0,0,0,0); filterFrom = f.getTime() } else filterFrom = null
+    if (dates[1]) { const t = new Date(dates[1]); t.setHours(23,59,59,999); filterTo = t.getTime() } else filterTo = null
+    setActiveBtn(null)
+    applyFilters()
+  }
+})
+
+function setQuick(type) {
+  const now = new Date()
+  let from, to
+  if (type === 'today') {
+    from = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    to = new Date(from)
+  } else if (type === 'month') {
+    from = new Date(now.getFullYear(), now.getMonth(), 1)
+    to = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+  } else if (type === 'prevmonth') {
+    from = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    to = new Date(now.getFullYear(), now.getMonth(), 0)
+  } else if (type === 'nextmonth') {
+    from = new Date(now.getFullYear(), now.getMonth() + 1, 1)
+    to = new Date(now.getFullYear(), now.getMonth() + 2, 0)
+  } else if (type === 'year') {
+    from = new Date(now.getFullYear(), 0, 1)
+    to = new Date(now.getFullYear(), 11, 31)
+  }
+  const f = new Date(from); f.setHours(0,0,0,0); filterFrom = f.getTime()
+  const t = new Date(to); t.setHours(23,59,59,999); filterTo = t.getTime()
+  _currentMonth = { year: from.getFullYear(), month: from.getMonth() }
+  picker.setDate([from, to])
+  setActiveBtn(type)
+  applyFilters()
+}
+
+let _currentMonth = null  // {year, month} ที่กำลังดูอยู่
+
+function shiftMonth(dir) {
+  const now = new Date()
+  if (!_currentMonth) {
+    _currentMonth = { year: now.getFullYear(), month: now.getMonth() }
+  }
+  _currentMonth.month += dir
+  if (_currentMonth.month > 11) { _currentMonth.month = 0; _currentMonth.year++ }
+  if (_currentMonth.month < 0)  { _currentMonth.month = 11; _currentMonth.year-- }
+  const from = new Date(_currentMonth.year, _currentMonth.month, 1)
+  const to   = new Date(_currentMonth.year, _currentMonth.month + 1, 0)
+  const f = new Date(from); f.setHours(0,0,0,0); filterFrom = f.getTime()
+  const t = new Date(to); t.setHours(23,59,59,999); filterTo = t.getTime()
+  picker.setDate([from, to])
+  setActiveBtn(null)
+  applyFilters()
+}
+
+function shiftDay(dir) {
+  const now = new Date()
+  let base
+  if (filterFrom) { base = new Date(filterFrom) } else { base = new Date(now.getFullYear(), now.getMonth(), now.getDate()) }
+  base.setDate(base.getDate() + dir)
+  const from = new Date(base.getFullYear(), base.getMonth(), base.getDate())
+  const to = new Date(base.getFullYear(), base.getMonth(), base.getDate())
+  from.setHours(0,0,0,0); filterFrom = from.getTime()
+  to.setHours(23,59,59,999); filterTo = to.getTime()
+  _currentMonth = { year: from.getFullYear(), month: from.getMonth() }
+  picker.setDate([from, to])
+  ;['today','month','year'].forEach(t => { const el=document.getElementById('btn-'+t); if(el) el.classList.remove('active') })
+  applyFilters()
+}
+
+function setActiveBtn(type) {
+  ['today','prevmonth','month','year'].forEach(t => { const el=document.getElementById('btn-'+t); if(el) el.classList.toggle('active', t===type) })
+}
+
+function clearFilters() {
+  document.getElementById('filter-team').value = ''
+  document.getElementById('filter-agent').value = ''
+  picker.clear()
+  filterFrom = null
+  filterTo = null
+  setActiveBtn(null)
+  applyFilters()
+}
+
+async function fetchSource(src) {
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${src.id}/values/${encodeURIComponent(src.sheet)}!A1:AM6000?key=${API_KEY}&valueRenderOption=FORMATTED_VALUE`
+    const res = await fetch(url)
+    const json = await res.json()
+    if (!json.values) return []
+    const [hdrs, ...rows] = json.values
+    const sourceIdx = SOURCES.indexOf(src)
+    return rows.map(r => {
+      const o = {}
+      hdrs.forEach((h, i) => o[h.trim()] = (r[i] || '').toString().trim())
+      o['_source'] = sourceIdx
+
+      // Normalize พนักงาน names
+      if (o['พนักงาน']) {
+        let n = o['พนักงาน']
+        // trim whitespace รวมถึง non-breaking space
+        n = n.replace(/[ ​\s]+/g, ' ').trim()
+        // normalize single digit prefix: "1 ซาร่า" → "01 ซาร่า"
+        n = n.replace(/^(\d) /, (m, d) => '0' + d + ' ')
+        // แก้ชื่อผิด
+        n = n.replace('นำฟ้า', 'น้ำฟ้า')
+        o['พนักงาน'] = n
+      }
+
+      // Admin Orders: map columns
+      if (src.sheet === 'Admin Orders') {
+        if (!o['พนักงาน'] && o['ชื่อ']) o['พนักงาน'] = o['ชื่อ']
+        if (!o['วันที่'] && o['วัน เดือน ปี']) o['วันที่'] = o['วัน เดือน ปี']
+        if (o['ทีม'] === 'Admins') o['ทีม'] = 'Admin'
+        if (!o['ทีม']) o['ทีม'] = 'Admin'
+      }
+      return o
+    }).filter(r => r['พนักงาน'] && r['พนักงาน'] !== '')
+  } catch(e) { console.error(e); return [] }
+}
+
+async function fetchData() {
+  try {
+    const results = await Promise.all(SOURCES.map(fetchSource))
+    allData = results.flat()
+    populateFilters()
+    applyFilters()
+
+    document.getElementById('last-update').textContent = 'อัพเดต ' + new Date().toLocaleTimeString('th-TH') + ` (${allData.length} แถว)`
+    // แสดงข้อมูลแหล่งที่มาใน footer
+    const el = document.getElementById('source-info')
+    const totalEl = document.getElementById('source-total')
+    const srcHTML = SOURCES.map(function(s, i) {
+      const count = results[i] ? results[i].length : 0
+      const url = 'https://docs.google.com/spreadsheets/d/' + s.id + '/edit'
+      const btn = document.createElement('a')
+      btn.href = url
+      btn.target = '_blank'
+      btn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 12px;text-decoration:none;font-size:11px;'
+      btn.innerHTML = '📊 <strong style="color:var(--text)">' + s.sheet + '</strong> <span style="color:var(--text3);">' + count.toLocaleString() + ' แถว</span> <span style="color:var(--accent);font-size:10px;">↗</span>'
+      btn.onmouseover = function() { this.style.borderColor = 'var(--accent)' }
+      btn.onmouseout = function() { this.style.borderColor = 'var(--border)' }
+      return btn.outerHTML
+    }).join('')
+    if (el) el.innerHTML = srcHTML
+    if (totalEl) totalEl.textContent = '| รวม ' + allData.length.toLocaleString() + ' แถว'
+  } catch(e) { console.error(e) }
+}
+
+function populateFilters() {
+  const teams = [...new Set(allData.map(r => r['ทีม']).filter(Boolean))].sort()
+  const tsel = document.getElementById('filter-team')
+  const tcur = tsel.value
+  while (tsel.options.length > 1) tsel.remove(1)
+  teams.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = stripNum(t); tsel.appendChild(o) })
+  if (teams.includes(tcur)) tsel.value = tcur
+
+  const selectedTeam = document.getElementById('filter-team').value
+  const agentData = selectedTeam
+    ? allData.filter(r => r['ทีม'] === selectedTeam)
+    : allData
+  const agents = [...new Set(agentData.map(r => r['พนักงาน']).filter(Boolean))].sort()
+  const sel = document.getElementById('filter-agent')
+  const cur = sel.value
+  while (sel.options.length > 1) sel.remove(1)
+  agents.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = stripNum(a); sel.appendChild(o) })
+  if (agents.includes(cur)) sel.value = cur
+}
+
+function getFiltered() {
+  const team = document.getElementById('filter-team').value
+  const agent = document.getElementById('filter-agent').value
+  return allData.filter(r => {
+    if (team && r['ทีม'] !== team) return false
+    if (agent && r['พนักงาน'] !== agent) return false
+    if (filterFrom || filterTo) {
+      const ts = parseTs(r['วันที่'])
+      if (ts === null) return false
+      if (filterFrom && ts < filterFrom) return false
+      if (filterTo && ts > filterTo) return false
+    }
+    return true
+  })
+}
+
+function applyFilters() {
+  const data = getFiltered()
+  const totalSales = data.reduce((s, r) => s + num(r['ยอดรวม']), 0)
+  const orders = data.filter(r => num(r['ยอดรวม']) > 0).length
+  const mainOrders = data.filter(r => num(r['ยอดรวม']) > 0 && r['Up'] !== '1').length
+  const basket = mainOrders > 0 ? totalSales / mainOrders : 0
+  const total = data.length
+  const closeRate = total > 0 ? (orders / total * 100) : 0
+
+  document.getElementById('kpi-total').textContent = fmt(totalSales)
+
+  // อัพเดตหลอดยอดขายสะสมทั้งปี — ดึงเฉพาะ CRM Orders (source แรก)
+  const TARGET = 200000000
+  const MILESTONES = [
+    { key:'emerald', val:30000000,  label:'💎 Emerald', remId:'ml-emerald-rem' },
+    { key:'diamond', val:50000000,  label:'💎 Diamond', remId:'ml-diamond-rem' },
+    { key:'100',     val:100000000, label:'100M',       remId:'ml-100-rem' },
+    { key:'150',     val:150000000, label:'150M',       remId:'ml-150-rem' },
+  ]
+  const currentYear = new Date().getFullYear()
+  const yearTotal = allData.filter(r => {
+    const ts = parseTs(r['วันที่'])
+    if (!ts) return false
+    return new Date(ts).getFullYear() === currentYear
+  }).reduce((s,r) => s + num(r['ยอดรวม']), 0)
+  const pct = Math.min(yearTotal / TARGET * 100, 100)
+  const barEl = document.getElementById('sales-bar')
+  if (barEl) {
+    barEl.style.width = pct.toFixed(2) + '%'
+    const pctEl = document.getElementById('sales-bar-pct')
+    const valEl = document.getElementById('sales-bar-val')
+    const remEl = document.getElementById('sales-bar-remain')
+    if (pctEl) pctEl.textContent = pct.toFixed(1) + '%'
+    if (valEl) valEl.textContent = fmt(yearTotal) + ' บาท'
+    if (remEl) remEl.textContent = 'คงเหลือถึงเป้า ' + fmt(Math.max(TARGET - yearTotal, 0)) + ' บาท'
+
+    // milestone positions
+    MILESTONES.forEach(m => {
+      const leftPct = (m.val / TARGET * 100).toFixed(2) + '%'
+      const lineEl = document.getElementById('ml-' + m.key + '-line')
+      const labelEl = document.getElementById('ml-' + m.key + '-label')
+      const remSpan = document.getElementById(m.remId)
+      if (lineEl) lineEl.style.left = leftPct
+      if (labelEl) labelEl.style.left = leftPct
+      if (remSpan) {
+        const remaining = Math.max(m.val - yearTotal, 0)
+        remSpan.textContent = remaining > 0 ? 'เหลือ ' + fmt(remaining) : '✓ ผ่าน'
+      }
+    })
+  }
+  document.getElementById('kpi-orders').textContent = orders
+  document.getElementById('kpi-basket').textContent = fmt(basket)
+  document.getElementById('kpi-close').textContent = closeRate.toFixed(1)
+  document.getElementById('s-total').textContent = total
+  document.getElementById('s-reach').textContent = data.filter(r => r['การชำระเงิน'] === 'COD').length
+  document.getElementById('s-talk').textContent = '—'
+  document.getElementById('s-out').textContent = total
+
+  const byDate = {}
+  data.forEach(r => {
+    const d = r['วันที่'] ? r['วันที่'].toString().split(' ')[0] : ''
+    if (!d) return
+    byDate[d] = (byDate[d] || 0) + num(r['ยอดรวม'])
+  })
+  const sorted = Object.keys(byDate).sort((a, b) => (parseTs(a) || 0) - (parseTs(b) || 0))
+  const shortLabels = sorted.map(d => { const p = d.split('-'); return p.length>=3 ? parseInt(p[2])+'/'+parseInt(p[1]) : d })
+  renderLine(shortLabels, sorted.map(d => byDate[d]))
+
+  // Re Pie Chart
+  const reGroups = { '2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8+':0 }
+  const reSalesGroups = { '2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8+':0 }
+  data.forEach(r => {
+    const n = parseInt(r['ครั้งที่']||0)
+    if (n < 2) return
+    const key = n >= 8 ? '8+' : String(n)
+    reGroups[key] = (reGroups[key]||0) + 1
+    reSalesGroups[key] = (reSalesGroups[key]||0) + num(r['ยอดรวม'])
+  })
+  const reLabels = Object.keys(reGroups).filter(k => reGroups[k] > 0).map(k => 'Re ' + k)
+  const reVals = reLabels.map(l => reGroups[l.replace('Re ','')])
+  const reSalesVals = reLabels.map(l => reSalesGroups[l.replace('Re ','')])
+  const reColorsArr = ['#1a6ef7','#0ea86a','#d97706','#ef4444','#7c3aed','#0891b2','#ea580c']
+  const reColors = reLabels.map((_,i) => reColorsArr[i % reColorsArr.length])
+  renderRePie(reLabels, reVals, reSalesVals, reColors)
+
+  const pm = {}
+  data.forEach(r => {
+    const p = r['สินค้า']; if (!p) return
+    if (!pm[p]) pm[p] = {re: 0, orders: 0, total: 0}
+    if (parseInt(r['ครั้งที่'] || 0) >= 2) pm[p].re++
+    if (num(r['ยอดรวม']) > 0) pm[p].orders++
+    pm[p].total += num(r['ยอดรวม'])
+  })
+  const prods = Object.entries(pm).sort((a, b) => b[1].total - a[1].total)
+  document.getElementById('prod-tbody').innerHTML = prods.length
+    ? prods.map(([n,v]) => `<tr><td class="prod-name">${n}</td><td class="prod-num">${v.re}</td><td class="prod-num">${v.orders}</td><td class="prod-total">${fmt(v.total)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty">ไม่มีข้อมูล</td></tr>'
+
+  const pieL = prods.slice(0, 7).map(([k]) => k)
+  const pieV = prods.slice(0, 7).map(([,v]) => v.total)
+  renderPie('pieChart', 'pie-legend', pieL, pieV)
+
+  // Team pie
+  const teamMap = {}
+  data.forEach(r => {
+    const t = r['ทีม'] || 'ไม่ระบุ'
+    teamMap[t] = (teamMap[t] || 0) + num(r['ยอดรวม'])
+  })
+  const teamLabels = Object.keys(teamMap).sort()
+  const teamVals = teamLabels.map(t => teamMap[t])
+  const teamColorMap = { 'VVIP': '#f59e0b', 'ทีมอเวนเจอร์': '#1a6ef7', 'Admin': '#0ea86a' }
+  const teamColors = teamLabels.map(t => teamColorMap[t] || '#94a3b8')
+  renderTeamPie(teamLabels, teamVals, teamColors)
+
+
+}
+
+function renderTeamPie(labels, vals, colors) {
+  const canvas = document.getElementById('teamPieChart')
+  if (!canvas) return
+  if (teamPieChart) teamPieChart.destroy()
+  if (!labels.length) return
+  const total = vals.reduce((a,b)=>a+b,0)
+  teamPieChart = new Chart(canvas.getContext('2d'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: vals, backgroundColor: colors.slice(0,labels.length), borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` ${c.label}: ${fmt(c.raw)} บาท (${(c.raw/total*100).toFixed(1)}%)` } }
+      },
+      cutout: '60%'
+    }
+  })
+  const leg = document.getElementById('team-pie-legend')
+  if (leg) leg.innerHTML = labels.map((l,i) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div>${l}: <strong>${fmt(vals[i])}</strong></div>`
+  ).join('')
+}
+
+function renderRePie(labels, vals, salesVals, colors) {
+  const canvas = document.getElementById('reOrderPie')
+  if (!canvas) return
+  if (rePieChart) rePieChart.destroy()
+  const total = vals.reduce((a,b)=>a+b,0)
+  rePieChart = new Chart(canvas.getContext('2d'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: vals, backgroundColor: colors, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` ${c.label}: ${c.raw} ราย (${(c.raw/total*100).toFixed(1)}%) | ${fmt(salesVals[c.dataIndex])} บาท` } }
+      },
+      cutout: '60%'
+    }
+  })
+  const leg = document.getElementById('re-order-legend')
+  if (leg) leg.innerHTML = labels.map((l,i) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]};width:10px;height:10px;"></div>
+     <span style="min-width:40px;">${l}</span>
+     <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;color:${colors[i]};margin:0 8px;">${fmt(salesVals[i])}</span>
+     <span style="font-size:11px;color:var(--text3);">${vals[i]} ราย</span></div>`
+  ).join('')
+}
+
+function renderLine(labels, vals) {
+  const ctx = document.getElementById('salesChart').getContext('2d')
+  if (salesChart) salesChart.destroy()
+  salesChart = new Chart(ctx, {
+    type: 'line',
+    data: {labels, datasets: [{label: 'ยอดขาย', data: vals, backgroundColor: 'rgba(26,110,247,0.1)', borderColor: '#1a6ef7', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#1a6ef7', pointRadius: 4}]},
+    options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {x: {ticks: {color: '#475569', font: {size: 10}}, grid: {color: 'rgba(0,0,0,0.06)'}}, y: {ticks: {color: '#475569', font: {size: 10}}, grid: {color: 'rgba(0,0,0,0.08)'}}}}
+  })
+}
+
+
+function renderPie(canvasId, legendId, labels, vals) {
+  const el = document.getElementById(canvasId); if (!el) return
+  const ctx = el.getContext('2d')
+  if (pieChart) pieChart.destroy()
+  if (!labels.length) return
+  const bgColors = labels.map((l, i) => getProductColor(l, i))
+  const chart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {labels, datasets: [{data: vals, backgroundColor: bgColors, borderWidth: 0}]},
+    options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, cutout: '65%'}
+  })
+  pieChart = chart
+  document.getElementById(legendId).innerHTML = labels.map((l, i) => `<div class="legend-item"><div class="legend-dot" style="background:${getProductColor(l, i)}"></div>${l}</div>`).join('')
+}
+fetchData().then(() => {
+  setQuick('month')
+  // debug น้ำฟ้า
+  const namfah = [...new Set(allData.map(r=>r['พนักงาน']).filter(n=>n&&n.includes('ฟ้า')))]
+  namfah.forEach(n => {
+    const bytes = [...n].map(c => c.charCodeAt(0).toString(16)).join(' ')
+    console.log('ฟ้า name:', JSON.stringify(n), 'bytes:', bytes)
+  })
+})
+setInterval(fetchData, 30000)
+</script>
+
+
+<div style="background:var(--bg2);border-top:1px solid var(--border);padding:12px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+  <span style="font-size:11px;color:var(--text3);">📋 แหล่งข้อมูล:</span>
+  <span id="source-info" style="display:flex;gap:8px;flex-wrap:wrap;"></span>
+  <span style="font-size:11px;color:var(--text3);margin-left:4px;" id="source-total"></span>
+</div>
+</body>
+</html>
