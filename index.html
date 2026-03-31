@@ -98,6 +98,46 @@
   .flatpickr-prev-month,.flatpickr-next-month{color:var(--text2) !important;fill:var(--text2) !important;}
   .numInputWrapper input{color:var(--text) !important;}
   .flatpickr-day.nextMonthDay,.flatpickr-day.prevMonthDay{color:var(--text3) !important;opacity:0.4 !important;}
+
+  /* ===== MOBILE RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    body { font-size: 13px; }
+    .main { padding: 10px; gap: 10px; }
+    .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+    .two-col { grid-template-columns: 1fr !important; }
+    div[style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+    div[style*="grid-template-columns:220px"] { grid-template-columns: 1fr !important; }
+    div[style*="grid-template-columns:180px"] { grid-template-columns: 1fr !important; }
+    div[style*="grid-template-columns:200px"] { grid-template-columns: 1fr !important; }
+    .filters { flex-wrap: wrap; gap: 6px; padding: 8px 10px; }
+    .filter-group { flex-wrap: wrap; gap: 4px; }
+    .btn-quick { font-size: 11px; padding: 5px 8px; }
+    .btn-clear { font-size: 11px; padding: 5px 8px; }
+    .date-input { min-width: 110px !important; font-size: 12px; }
+    .card { padding: 12px; }
+    .card-title { font-size: 12px; }
+    .kpi-val { font-size: 26px !important; }
+    .nav-tabs { padding: 0 10px; overflow-x: auto; white-space: nowrap; }
+    .nav-tab { padding: 10px 12px; font-size: 13px; }
+    .pie-wrap { height: 150px !important; }
+    .legend { flex-wrap: wrap !important; }
+    .legend-item { font-size: 11px; }
+    .prod-table { font-size: 11px; }
+    .prod-table th, .prod-table td { padding: 6px 4px; }
+    .header-sub { display: none; }
+    div[style*="max-width:620px"] { max-width: 100% !important; margin: 6px 0 !important; }
+    div[style*="max-width:500px"] { max-width: 100% !important; }
+    div[style*="font-size:32px"] { font-size: 20px !important; }
+    div[style*="font-size:28px"] { font-size: 18px !important; }
+    table { display: block; overflow-x: auto; }
+  }
+
+  @media (max-width: 480px) {
+    .kpi-grid { grid-template-columns: 1fr !important; }
+    .kpi-val { font-size: 22px !important; }
+    div[style*="grid-template-columns:repeat(3"] { grid-template-columns: repeat(2,1fr) !important; }
+  }
 </style>
 </head>
 <body>
