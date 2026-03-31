@@ -103,11 +103,17 @@
     *{box-sizing:border-box;}
     html,body{overflow-x:hidden;width:100%;max-width:100vw;}
     .main{padding:10px;gap:10px;}
-    .kpi-grid{grid-template-columns:1fr 1fr !important;gap:8px;} .kpi-card{min-width:0;}
+    .kpi-grid{grid-template-columns:1fr 1fr !important;gap:8px;}
+    .kpi-card{min-width:0;padding:12px 10px !important;}
+    .kpi-val{font-size:22px !important;word-break:break-word;}
+    .kpi-label{font-size:11px !important;}
+    .kpi-unit{font-size:10px !important;}
     .kpi-val{font-size:20px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .two-col,div[style*="grid-template-columns:1fr 1fr 1fr"],div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important;}
     div[style*="grid-template-columns:220px"],div[style*="grid-template-columns:180px"]{grid-template-columns:120px 1fr !important;}
     .filters{flex-wrap:wrap;padding:8px;gap:5px;}
+    #filter-team,#filter-agent{width:100%;max-width:100%;font-size:13px;}
+    .filter-group{width:100%;}
     .filter-group{flex-wrap:wrap;gap:4px;}
     .btn-quick,.btn-nav,.btn-clear{font-size:11px;padding:5px 8px;}
     .date-input{width:140px !important;min-width:0 !important;font-size:11px;}
@@ -600,7 +606,7 @@ function applyFilters() {
   const upsellOrdEl = document.getElementById('kpi-upsell-orders')
   const upsellAmtEl = document.getElementById('kpi-upsell-amt')
   if (upsellOrdEl) upsellOrdEl.textContent = upsellOrders
-  if (upsellAmtEl) upsellAmtEl.textContent = fmt(upsellAmt)
+  if (upsellAmtEl) upsellAmtEl.textContent = upsellAmt >= 1000000 ? shortFmt(upsellAmt) : fmt(upsellAmt)
   document.getElementById('s-total').textContent = total
   document.getElementById('s-reach').textContent = data.filter(r => r['การชำระเงิน'] === 'COD').length
   document.getElementById('s-talk').textContent = '—'
