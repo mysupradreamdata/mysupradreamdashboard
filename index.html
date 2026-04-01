@@ -259,6 +259,8 @@
       <div class="stat-row"><span class="stat-name">ได้คุย (COD)</span><span class="stat-val" id="s-reach">—</span></div>
       <div class="stat-row"><span class="stat-name">Talktime</span><span class="stat-val" id="s-talk">—</span></div>
       <div class="stat-row"><span class="stat-name">สายโทรออก</span><span class="stat-val" id="s-out">—</span></div>
+      <div class="stat-row"><span class="stat-name">ตีกลับ</span><span class="stat-val" id="s-return">—</span></div>
+      <div class="stat-row"><span class="stat-name">% ตีกลับ</span><span class="stat-val" id="s-return-rate">—</span></div>
     </div>
   </div>
 
@@ -289,8 +291,8 @@
   <div class="card">
     <div class="card-title">รายละเอียดสินค้า — ยอดรี / จำนวนออเดอร์ / ยอดขาย</div>
     <table class="prod-table">
-      <thead><tr><th>สินค้า</th><th>ยอดรี</th><th>จำนวนออเดอร์</th><th>ยอดขายรวม (บาท)</th></tr></thead>
-      <tbody id="prod-tbody"><tr><td colspan="4" class="empty">กำลังโหลด...</td></tr></tbody>
+      <thead><tr><th>สินค้า</th><th>ยอดรี</th><th>จำนวนออเดอร์</th><th>จำนวน (กล่อง)</th><th>ยอดขายรวม (บาท)</th></tr></thead>
+      <tbody id="prod-tbody"><tr><td colspan="5" class="empty">กำลังโหลด...</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -327,6 +329,22 @@ function getProductColor(name, index) {
 }
 
 let allData = [], salesChart = null, salesByAgentChart = null, pieChart = null, rePieChart = null, teamPieChart = null
+window._cachedYearTotal = 0
+
+function autoFitKPI() {
+  document.querySelectorAll('.kpi-value').forEach(function(el) {
+    el.style.fontSize = ''
+    var card = el.closest('.kpi-card')
+    if (!card) return
+    var maxW = card.offsetWidth - 28
+    var size = 26
+    el.style.fontSize = size + 'px'
+    while (el.scrollWidth > maxW && size > 14) {
+      size -= 1
+      el.style.fontSize = size + 'px'
+    }
+  })
+}
 let filterFrom = null, filterTo = null
 
 // รองรับหลาย format: "2026-01-01 0:00:0", "1/1/2026", "30/3/2026"
@@ -501,32 +519,39 @@ async function fetchSource(src) {
   } catch(e) { console.error(e); return [] }
 }
 
+function updateFooter(results) {
+  setTimeout(function() {
+    const el = document.getElementById('source-info')
+    const totalEl = document.getElementById('source-total')
+    if (!el) { console.log('source-info not found'); return }
+    const html = SOURCES.map(function(s, i) {
+      const count = results && results[i] ? results[i].length : 0
+      const url = 'https://docs.google.com/spreadsheets/d/' + s.id + '/edit'
+      return '<a href="' + url + '" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 12px;text-decoration:none;font-size:11px;color:#334155;">📊 <b>' + s.sheet + '</b>&nbsp;<span style="color:#64748b;">' + count.toLocaleString() + ' แถว</span>&nbsp;<span style="color:#1a6ef7;">↗</span></a>'
+    }).join('')
+    el.innerHTML = html
+    if (totalEl) totalEl.textContent = '| รวม ' + allData.length.toLocaleString() + ' แถว'
+  }, 500)
+}
+
 async function fetchData() {
   try {
     const results = await Promise.all(SOURCES.map(fetchSource))
     allData = results.flat()
+    // cache ยอดรวมทั้งปี
+    const currentYear = new Date().getFullYear()
+    window._cachedYearTotal = allData.filter(r => {
+      const ts = parseTs(r['วันที่'])
+      if (!ts) return false
+      return new Date(ts).getFullYear() === currentYear
+    }).reduce((s,r) => s + num(r['ยอดรวม']), 0)
     populateFilters()
     applyFilters()
 
     setTimeout(autoFitKPI, 50)
-  document.getElementById('last-update').textContent = 'อัพเดต ' + new Date().toLocaleTimeString('th-TH') + ` (${allData.length} แถว)`
+    document.getElementById('last-update').textContent = 'อัพเดต ' + new Date().toLocaleTimeString('th-TH') + ' (' + allData.length + ' แถว)'
     // แสดงข้อมูลแหล่งที่มาใน footer
-    const el = document.getElementById('source-info')
-    const totalEl = document.getElementById('source-total')
-    const srcHTML = SOURCES.map(function(s, i) {
-      const count = results[i] ? results[i].length : 0
-      const url = 'https://docs.google.com/spreadsheets/d/' + s.id + '/edit'
-      const btn = document.createElement('a')
-      btn.href = url
-      btn.target = '_blank'
-      btn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:4px 12px;text-decoration:none;font-size:11px;'
-      btn.innerHTML = '📊 <strong style="color:var(--text)">' + s.sheet + '</strong> <span style="color:var(--text3);">' + count.toLocaleString() + ' แถว</span> <span style="color:var(--accent);font-size:10px;">↗</span>'
-      btn.onmouseover = function() { this.style.borderColor = 'var(--accent)' }
-      btn.onmouseout = function() { this.style.borderColor = 'var(--border)' }
-      return btn.outerHTML
-    }).join('')
-    if (el) el.innerHTML = srcHTML
-    if (totalEl) totalEl.textContent = '| รวม ' + allData.length.toLocaleString() + ' แถว'
+    updateFooter(results)
   } catch(e) { console.error(e) }
 }
 
@@ -566,6 +591,12 @@ function getFiltered() {
 }
 
 function applyFilters() {
+  // defer to avoid blocking UI
+  if (window._applyFiltersTimer) clearTimeout(window._applyFiltersTimer)
+  window._applyFiltersTimer = setTimeout(_doApplyFilters, 0)
+}
+
+function _doApplyFilters() {
   const data = getFiltered()
   const totalSales = data.reduce((s, r) => s + num(r['ยอดรวม']), 0)
   const orders = data.filter(r => num(r['ยอดรวม']) > 0).length
@@ -584,12 +615,7 @@ function applyFilters() {
     { key:'100',     val:100000000, label:'100M',       remId:'ml-100-rem' },
     { key:'150',     val:150000000, label:'150M',       remId:'ml-150-rem' },
   ]
-  const currentYear = new Date().getFullYear()
-  const yearTotal = allData.filter(r => {
-    const ts = parseTs(r['วันที่'])
-    if (!ts) return false
-    return new Date(ts).getFullYear() === currentYear
-  }).reduce((s,r) => s + num(r['ยอดรวม']), 0)
+  const yearTotal = _cachedYearTotal
   const pct = Math.min(yearTotal / TARGET * 100, 100)
   const barEl = document.getElementById('sales-bar')
   if (barEl) {
@@ -631,15 +657,58 @@ function applyFilters() {
   document.getElementById('s-talk').textContent = '—'
   document.getElementById('s-out').textContent = total
 
+  // ตีกลับ
+  const totalReturn = data.reduce((s,r) => s + parseInt(r['จำนวนตีกลับ'] || 0), 0)
+  const returnEl = document.getElementById('s-return')
+  const returnRateEl = document.getElementById('s-return-rate')
+  if (returnEl) returnEl.textContent = totalReturn || '—'
+  if (returnRateEl) returnRateEl.textContent = data.length > 0 && totalReturn > 0 ? (totalReturn / data.length * 100).toFixed(1) + '%' : '—'
+
   const byDate = {}
   data.forEach(r => {
-    const d = r['วันที่'] ? r['วันที่'].toString().split(' ')[0] : ''
-    if (!d) return
+    const raw = r['วันที่'] ? r['วันที่'].toString().split(' ')[0] : ''
+    if (!raw) return
+    // normalize to YYYY-MM-DD
+    let d = raw
+    if (raw.indexOf('/') >= 0) {
+      const p = raw.split('/')
+      if (p.length === 3) {
+        const day = p[0].padStart(2,'0')
+        const mon = p[1].padStart(2,'0')
+        const yr = p[2].length === 2 ? '20'+p[2] : p[2]
+        d = yr+'-'+mon+'-'+day
+      }
+    }
     byDate[d] = (byDate[d] || 0) + num(r['ยอดรวม'])
   })
   const sorted = Object.keys(byDate).sort((a, b) => (parseTs(a) || 0) - (parseTs(b) || 0))
-  const shortLabels = sorted.map(d => { const p = d.split('-'); return p.length>=3 ? parseInt(p[2])+'/'+parseInt(p[1]) : d })
-  renderLine(shortLabels, sorted.map(d => byDate[d]))
+
+  // ถ้าดูทั้งปี (>60 วัน) → group by เดือน
+  const dayCount = sorted.length
+  let chartLabels, chartVals
+  if (dayCount > 60) {
+    const byMonth = {}
+    sorted.forEach(d => {
+      var yr, mo
+      if (d.indexOf('-') >= 0) { const p = d.split('-'); yr=p[0]; mo=p[1] }
+      else if (d.indexOf('/') >= 0) { const p = d.split('/'); yr=p[2]; mo=String(parseInt(p[1])).padStart(2,'0') }
+      else return
+      const key = yr+'-'+mo
+      byMonth[key] = (byMonth[key] || 0) + byDate[d]
+    })
+    const monthKeys = Object.keys(byMonth).sort()
+    const thM = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
+    chartLabels = monthKeys.map(k => { const mo=parseInt(k.split('-')[1]); return thM[mo]||k })
+    chartVals = monthKeys.map(k => byMonth[k])
+  } else {
+    chartLabels = sorted.map(d => {
+      if (d.indexOf('-')>=0) { const p=d.split('-'); return parseInt(p[2]) }
+      if (d.indexOf('/')>=0) { return parseInt(d.split('/')[0]) }
+      return d
+    })
+    chartVals = sorted.map(d => byDate[d])
+  }
+  renderLine(chartLabels, chartVals)
 
   // Re Pie Chart
   const reGroups = { '2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8+':0 }
@@ -661,15 +730,16 @@ function applyFilters() {
   const pm = {}
   data.forEach(r => {
     const p = r['สินค้า']; if (!p) return
-    if (!pm[p]) pm[p] = {re: 0, orders: 0, total: 0}
+    if (!pm[p]) pm[p] = {re: 0, orders: 0, qty: 0, total: 0}
     if (parseInt(r['ครั้งที่'] || 0) >= 2) pm[p].re++
     if (num(r['ยอดรวม']) > 0) pm[p].orders++
+    pm[p].qty += parseInt(r['จำนวน'] || 0)
     pm[p].total += num(r['ยอดรวม'])
   })
   const prods = Object.entries(pm).sort((a, b) => b[1].total - a[1].total)
   document.getElementById('prod-tbody').innerHTML = prods.length
-    ? prods.map(([n,v]) => `<tr><td class="prod-name">${n}</td><td class="prod-num">${v.re}</td><td class="prod-num">${v.orders}</td><td class="prod-total">${fmt(v.total)}</td></tr>`).join('')
-    : '<tr><td colspan="4" class="empty">ไม่มีข้อมูล</td></tr>'
+    ? prods.map(([n,v]) => `<tr><td class="prod-name">${n}</td><td class="prod-num">${v.re}</td><td class="prod-num">${v.orders}</td><td class="prod-num">${v.qty||0}</td><td class="prod-total">${fmt(v.total)}</td></tr>`).join('')
+    : '<tr><td colspan="5" class="empty">ไม่มีข้อมูล</td></tr>'
 
   const pieL = prods.slice(0, 7).map(([k]) => k)
   const pieV = prods.slice(0, 7).map(([,v]) => v.total)
@@ -686,8 +756,6 @@ function applyFilters() {
   const teamColorMap = { 'VVIP': '#f59e0b', 'ทีมอเวนเจอร์': '#1a6ef7', 'Admin': '#0ea86a' }
   const teamColors = teamLabels.map(t => teamColorMap[t] || '#94a3b8')
   renderTeamPie(teamLabels, teamVals, teamColors)
-
-
 }
 
 function renderTeamPie(labels, vals, colors) {
@@ -745,8 +813,24 @@ function renderLine(labels, vals) {
   if (salesChart) salesChart.destroy()
   salesChart = new Chart(ctx, {
     type: 'line',
-    data: {labels, datasets: [{label: 'ยอดขาย', data: vals, backgroundColor: 'rgba(26,110,247,0.1)', borderColor: '#1a6ef7', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#1a6ef7', pointRadius: 0, pointHoverRadius: 4}]},
-    options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, scales: {x: {ticks: {color: '#475569', font: {size: 10}}, grid: {color: 'rgba(0,0,0,0.06)'}}, y: {ticks: {color: '#475569', font: {size: 10}}, grid: {color: 'rgba(0,0,0,0.08)'}}}}
+    data: {labels, datasets: [{label: 'ยอดขาย', data: vals, backgroundColor: 'rgba(26,110,247,0.1)', borderColor: '#1a6ef7', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#1a6ef7', pointRadius: 0, pointHoverRadius: 0}]},
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ' ยอดขาย: ' + ctx.parsed.y.toLocaleString('th-TH') + ' บาท' }
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.06)' } },
+        y: { ticks: { color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.08)' } }
+      }
+    }
   })
 }
 
@@ -767,12 +851,6 @@ function renderPie(canvasId, legendId, labels, vals) {
 }
 fetchData().then(() => {
   setQuick('month')
-  // debug น้ำฟ้า
-  const namfah = [...new Set(allData.map(r=>r['พนักงาน']).filter(n=>n&&n.includes('ฟ้า')))]
-  namfah.forEach(n => {
-    const bytes = [...n].map(c => c.charCodeAt(0).toString(16)).join(' ')
-    console.log('ฟ้า name:', JSON.stringify(n), 'bytes:', bytes)
-  })
 })
 setInterval(fetchData, 30000)
 </script>
