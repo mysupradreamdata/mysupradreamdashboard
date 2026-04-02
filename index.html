@@ -22,19 +22,12 @@
   .nav-tab:hover{color:var(--text2);}
   .nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
   .page{display:none;}.page.active{display:block;}
-  
-  
-  
-  
   .agent-stat:last-child{border-bottom:none;}
   .agent-stat-label{font-size:12px;color:var(--text3);}
   .agent-stat-val{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--text);}
   .agent-stat-val.blue{color:var(--accent);}
   .agent-stat-val.green{color:var(--accent2);}
   .agent-stat-val.amber{color:var(--accent3);}
-  
-  
-  
   .sales-rank.gold{background:#f59e0b;color:#fff;}
   .sales-rank.silver{background:#94a3b8;color:#fff;}
   .sales-rank.bronze{background:#92400e;color:#fff;}
@@ -73,8 +66,6 @@
   .stat-row:last-child{border-bottom:none;}
   .stat-name{color:var(--text2);font-size:13px;}
   .stat-val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;color:var(--text);}
-  
-
   .prod-table{width:100%;border-collapse:collapse;}
   .prod-table th{text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;padding:6px 8px;border-bottom:2px solid var(--border);}
   .prod-table td{padding:9px 8px;font-size:12px;border-bottom:1px solid var(--border);}
@@ -138,23 +129,11 @@
   @media (max-width:480px){
     .kpi-value{font-size:clamp(14px, 5vw, 22px) !important;word-break:break-word;line-height:1.1;}
   }
-
   @media (max-width: 768px) {
-    .kpi-row {
-      grid-template-columns: 1fr 1fr !important;
-      gap: 10px !important;
-    }
-    .kpi-card {
-      padding: 14px 12px !important;
-    }
-    .kpi-value {
-      font-size: 20px !important;
-      word-break: break-word !important;
-      line-height: 1.2 !important;
-    }
-    .kpi-value[style*="font-size:32px"] {
-      font-size: 20px !important;
-    }
+    .kpi-row {grid-template-columns: 1fr 1fr !important;gap: 10px !important;}
+    .kpi-card {padding: 14px 12px !important;}
+    .kpi-value {font-size: 20px !important;word-break: break-word !important;line-height: 1.2 !important;}
+    .kpi-value[style*="font-size:32px"] {font-size: 20px !important;}
   }
 </style>
 </head>
@@ -170,14 +149,12 @@
       <span style="font-size:12px;color:rgba(255,255,255,.8);">ยอดขายสะสม</span>
       <span style="font-size:12px;color:rgba(255,255,255,.8);">เป้าหมาย 200,000,000 บาท</span>
     </div>
-    <!-- milestone labels above bar -->
     <div style="position:relative;height:32px;margin-bottom:2px;">
       <div id="ml-emerald-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">💎 Emerald<br><span id="ml-emerald-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
       <div id="ml-diamond-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">💎 Diamond<br><span id="ml-diamond-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
       <div id="ml-100-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">100M<br><span id="ml-100-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
       <div id="ml-150-label" style="position:absolute;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,.9);font-weight:600;text-align:center;white-space:nowrap;">150M<br><span id="ml-150-rem" style="font-weight:400;font-size:8px;color:rgba(255,255,255,.7);"></span></div>
     </div>
-    <!-- bar -->
     <div style="position:relative;">
       <div id="ml-emerald-line" style="position:absolute;top:0;width:2px;height:22px;background:rgba(255,255,255,.6);z-index:2;"></div>
       <div id="ml-diamond-line" style="position:absolute;top:0;width:2px;height:22px;background:rgba(255,255,255,.6);z-index:2;"></div>
@@ -195,32 +172,37 @@
     </div>
   </div>
   <div style="text-align:right">
-    <div><span class="dot"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.7)" id="last-update">กำลังโหลด...</span></div>
+    <div><span class="dot"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.7)" id="last-update-top">กำลังโหลด...</span></div>
     <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">อัพเดตอัตโนมัติทุก 30 วิ</div>
   </div>
 </div>
+
 <div class="header">
   <div>
     <div class="header-title">📊 CRM Dashboard — MD 2026</div>
     <div class="header-sub">บีทออเดอร์ MD 2026</div>
   </div>
   <div style="text-align:right">
-    <div><span class="dot"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)" id="last-update">กำลังโหลด...</span></div>
+    <div><span class="dot" style="background:var(--accent);"></span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)" id="last-update">กำลังโหลด...</span></div>
     <div style="font-size:11px;color:var(--text3);margin-top:2px">อัพเดตอัตโนมัติทุก 30 วิ</div>
   </div>
 </div>
 
-
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="showPage('overview')">📊 ภาพรวม</button>
-
 </div>
-<div id="page-overview" class="page active">
 
+<div id="page-overview" class="page active">
 <div class="filters">
   <div class="filter-group">
     <span class="filter-label">ทีม</span>
-    <select id="filter-team" onchange="populateFilters(); applyFilters()"><option value="">ทั้งหมด</option><option value="VVIP">VVIP</option><option value="ทีมอเวนเจอร์">ทีมอเวนเจอร์</option><option value="Admin">Admin</option><option value="CRM">CRM (VVIP+อเวนเจอร์)</option></select>
+    <select id="filter-team" onchange="populateFilters(); applyFilters()">
+      <option value="">ทั้งหมด</option>
+      <option value="VVIP">VVIP</option>
+      <option value="ทีมอเวนเจอร์">ทีมอเวนเจอร์</option>
+      <option value="Admin">Admin</option>
+      <option value="CRM">CRM (VVIP+อเวนเจอร์)</option>
+    </select>
   </div>
   <div class="filter-group">
     <span class="filter-label">พนักงาน</span>
@@ -229,7 +211,7 @@
   <div class="filter-group" style="gap:6px">
     <button class="btn-quick" onclick="shiftMonth(-1)">&#8249; เดือนที่แล้ว</button>
     <button class="btn-quick" id="btn-month" onclick="setQuick('month')">เดือนนี้</button>
-    <button class="btn-quick" onclick="shiftDay(-1)" id="btn-prevday">&#8249; วัน</button>
+    <button class="btn-quick" onclick="shiftDay(-1)">&#8249; วัน</button>
     <input class="date-input" id="date-range" placeholder="เลือกช่วงวันที่" readonly style="min-width:150px;text-align:center;">
     <button class="btn-quick" onclick="shiftDay(1)">วัน &#8250;</button>
     <button class="btn-quick" onclick="shiftMonth(1)">เดือนหน้า &#8250;</button>
@@ -244,8 +226,13 @@
     <div class="kpi-card blue"><div class="kpi-label">ยอดขายรวม</div><div class="kpi-value blue" id="kpi-total">—</div><div class="kpi-unit">บาท</div></div>
     <div class="kpi-card green"><div class="kpi-label">จำนวนออเดอร์</div><div class="kpi-value green" id="kpi-orders">—</div><div class="kpi-unit">รายการ</div></div>
     <div class="kpi-card amber"><div class="kpi-label">Basket Size เฉลี่ย</div><div class="kpi-value amber" id="kpi-basket">—</div><div class="kpi-unit">บาท/ออเดอร์</div></div>
-    <div class="kpi-card" style="border-top:3px solid #7c3aed;"><div class="kpi-label">Upsell</div><div class="kpi-value" style="color:#7c3aed;font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;" id="kpi-upsell-orders">—</div><div class="kpi-unit">ออเดอร์</div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#7c3aed;margin-top:4px;" id="kpi-upsell-amt">—</div><div class="kpi-unit">บาท</div></div>
-
+    <div class="kpi-card" style="border-top:3px solid #7c3aed;">
+      <div class="kpi-label">Upsell</div>
+      <div class="kpi-value" style="color:#7c3aed;font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;" id="kpi-upsell-orders">—</div>
+      <div class="kpi-unit">ออเดอร์</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#7c3aed;margin-top:4px;" id="kpi-upsell-amt">—</div>
+      <div class="kpi-unit">บาท</div>
+    </div>
   </div>
 
   <div class="two-col">
@@ -264,16 +251,12 @@
     </div>
   </div>
 
-
-
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
     <div class="card">
       <div class="card-title">CRM ยอดรี</div>
       <div style="display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center;">
         <div style="position:relative;height:220px;"><canvas id="reOrderPie"></canvas></div>
-        <div>
-          <div class="legend" id="re-order-legend" style="flex-direction:column;gap:8px;"></div>
-        </div>
+        <div><div class="legend" id="re-order-legend" style="flex-direction:column;gap:8px;"></div></div>
       </div>
     </div>
     <div class="card">
@@ -296,16 +279,13 @@
     </table>
   </div>
 </div>
-</div><!-- end page-overview -->
+</div>
 
 <script>
-const API_KEY = 'AIzaSyBWePiHaVyYTvy-IlXFbFZ6qKebJcrbXYQ'
-const SOURCES = [
-  { id: '1XDeOGwkyD3R5vIe0WXQLbjcRXFS8pDnlv2B-S1nSfis', sheet: 'CRM Orders' },
-  { id: '1XDeOGwkyD3R5vIe0WXQLbjcRXFS8pDnlv2B-S1nSfis', sheet: 'CRM Orders 2025' },
-  { id: '1XDeOGwkyD3R5vIe0WXQLbjcRXFS8pDnlv2B-S1nSfis', sheet: 'Admin Orders' },
-]
-// สีตามชื่อสินค้า
+// ========== เปลี่ยนมาใช้ Apps Script URL แทน API Key ==========
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_b5qDJ6vyL5enpyfL6BoEJjxjrv_t5uzPnNBpFB_BLiDeMbRmwV_l_b7aN1JC9a_Oow/exec'
+const SHEET_NAMES = ['CRM Orders', 'CRM Orders 2025', 'Admin Orders']
+
 const PRODUCT_COLORS = {
   'เบต้าออยล์ (10)': '#f59e0b',
   'Labfarm': '#15803d',
@@ -320,46 +300,23 @@ const COLORS = ['#f59e0b','#15803d','#38bdf8','#92400e','#7c3aed','#ef4444','#1e
 
 function getProductColor(name, index) {
   for (const [key, color] of Object.entries(PRODUCT_COLORS)) {
-    if (name && name.includes(key.split(' ')[0]) && name.includes(key.split(' ')[1] || '')) {
-      return color
-    }
+    if (name && name.includes(key.split(' ')[0]) && name.includes(key.split(' ')[1] || '')) return color
     if (name === key) return color
   }
   return COLORS[index % COLORS.length]
 }
 
-let allData = [], salesChart = null, salesByAgentChart = null, pieChart = null, rePieChart = null, teamPieChart = null
+let allData = [], salesChart = null, pieChart = null, rePieChart = null, teamPieChart = null
 window._cachedYearTotal = 0
 
-function autoFitKPI() {
-  document.querySelectorAll('.kpi-value').forEach(function(el) {
-    el.style.fontSize = ''
-    var card = el.closest('.kpi-card')
-    if (!card) return
-    var maxW = card.offsetWidth - 28
-    var size = 26
-    el.style.fontSize = size + 'px'
-    while (el.scrollWidth > maxW && size > 14) {
-      size -= 1
-      el.style.fontSize = size + 'px'
-    }
-  })
-}
-let filterFrom = null, filterTo = null
-
-// รองรับหลาย format: "2026-01-01 0:00:0", "1/1/2026", "30/3/2026"
 function parseTs(str) {
   if (!str) return null
   const s = String(str).trim()
   if (!s) return null
-
-  // format "2026-01-01" หรือ "2026-01-01 0:00:0"
   if (s.includes('-')) {
     const dt = new Date(s.split(' ')[0])
     if (!isNaN(dt)) { dt.setHours(0,0,0,0); return dt.getTime() }
   }
-
-  // format D/M/YYYY หรือ D/M/YY
   if (s.includes('/')) {
     const p = s.split('/')
     if (p.length >= 3) {
@@ -373,7 +330,6 @@ function parseTs(str) {
       }
     }
   }
-
   return null
 }
 
@@ -382,19 +338,17 @@ function shortFmt(n) {
   if (n >= 1000) return (n/1000).toFixed(0) + 'K'
   return n.toLocaleString('th-TH')
 }
-
 function fmt(n) { return Number(n).toLocaleString('th-TH', {maximumFractionDigits: 0}) }
 function stripNum(name) {
   if (!name) return name
-  // ตัด prefix เลข เช่น "06 น็อตเตอร์" → "น็อตเตอร์"
   name = name.replace(/^\d+\s*/, '')
-  // ตัด admin_ prefix
   name = name.replace(/^admin_/, '')
   return name
 }
-function num(v) { return parseFloat((v || '').replace(/,/g, '')) || 0 }
+function num(v) { return parseFloat((String(v)||'').replace(/,/g, '')) || 0 }
 
-// flatpickr ใช้ D/M/Y ตรงกับ Sheet
+let filterFrom = null, filterTo = null
+
 const picker = flatpickr('#date-range', {
   mode: 'range',
   dateFormat: 'd/m/Y',
@@ -416,12 +370,6 @@ function setQuick(type) {
   } else if (type === 'month') {
     from = new Date(now.getFullYear(), now.getMonth(), 1)
     to = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-  } else if (type === 'prevmonth') {
-    from = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-    to = new Date(now.getFullYear(), now.getMonth(), 0)
-  } else if (type === 'nextmonth') {
-    from = new Date(now.getFullYear(), now.getMonth() + 1, 1)
-    to = new Date(now.getFullYear(), now.getMonth() + 2, 0)
   } else if (type === 'year') {
     from = new Date(now.getFullYear(), 0, 1)
     to = new Date(now.getFullYear(), 11, 31)
@@ -434,13 +382,11 @@ function setQuick(type) {
   applyFilters()
 }
 
-let _currentMonth = null  // {year, month} ที่กำลังดูอยู่
+let _currentMonth = null
 
 function shiftMonth(dir) {
   const now = new Date()
-  if (!_currentMonth) {
-    _currentMonth = { year: now.getFullYear(), month: now.getMonth() }
-  }
+  if (!_currentMonth) _currentMonth = { year: now.getFullYear(), month: now.getMonth() }
   _currentMonth.month += dir
   if (_currentMonth.month > 11) { _currentMonth.month = 0; _currentMonth.year++ }
   if (_currentMonth.month < 0)  { _currentMonth.month = 11; _currentMonth.year-- }
@@ -455,8 +401,7 @@ function shiftMonth(dir) {
 
 function shiftDay(dir) {
   const now = new Date()
-  let base
-  if (filterFrom) { base = new Date(filterFrom) } else { base = new Date(now.getFullYear(), now.getMonth(), now.getDate()) }
+  let base = filterFrom ? new Date(filterFrom) : new Date(now.getFullYear(), now.getMonth(), now.getDate())
   base.setDate(base.getDate() + dir)
   const from = new Date(base.getFullYear(), base.getMonth(), base.getDate())
   const to = new Date(base.getFullYear(), base.getMonth(), base.getDate())
@@ -464,12 +409,15 @@ function shiftDay(dir) {
   to.setHours(23,59,59,999); filterTo = to.getTime()
   _currentMonth = { year: from.getFullYear(), month: from.getMonth() }
   picker.setDate([from, to])
-  ;['today','month','year'].forEach(t => { const el=document.getElementById('btn-'+t); if(el) el.classList.remove('active') })
+  setActiveBtn(null)
   applyFilters()
 }
 
 function setActiveBtn(type) {
-  ['today','prevmonth','month','year'].forEach(t => { const el=document.getElementById('btn-'+t); if(el) el.classList.toggle('active', t===type) })
+  ['today','month','year'].forEach(t => {
+    const el = document.getElementById('btn-'+t)
+    if (el) el.classList.toggle('active', t===type)
+  })
 }
 
 function clearFilters() {
@@ -482,88 +430,84 @@ function clearFilters() {
   applyFilters()
 }
 
-async function fetchSource(src) {
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${src.id}/values/${encodeURIComponent(src.sheet)}!A1:AM6000?key=${API_KEY}&valueRenderOption=FORMATTED_VALUE`
-    const res = await fetch(url)
-    const json = await res.json()
-    if (!json.values) return []
-    const [hdrs, ...rows] = json.values
-    const sourceIdx = SOURCES.indexOf(src)
-    return rows.map(r => {
-      const o = {}
-      hdrs.forEach((h, i) => o[h.trim()] = (r[i] || '').toString().trim())
-      o['_source'] = sourceIdx
-
-      // Normalize พนักงาน names
-      if (o['พนักงาน']) {
-        let n = o['พนักงาน']
-        // trim whitespace รวมถึง non-breaking space
-        n = n.replace(/[ ​\s]+/g, ' ').trim()
-        // normalize single digit prefix: "1 ซาร่า" → "01 ซาร่า"
-        n = n.replace(/^(\d) /, (m, d) => '0' + d + ' ')
-        // แก้ชื่อผิด
-        n = n.replace('นำฟ้า', 'น้ำฟ้า')
-        o['พนักงาน'] = n
-      }
-
-      // Admin Orders: map columns
-      if (src.sheet === 'Admin Orders') {
-        if (!o['พนักงาน'] && o['ชื่อ']) o['พนักงาน'] = o['ชื่อ']
-        if (!o['วันที่'] && o['วัน เดือน ปี']) o['วันที่'] = o['วัน เดือน ปี']
-        if (o['ทีม'] === 'Admins') o['ทีม'] = 'Admin'
-        if (!o['ทีม']) o['ทีม'] = 'Admin'
-      }
-      return o
-    }).filter(r => r['พนักงาน'] && r['พนักงาน'] !== '')
-  } catch(e) { console.error(e); return [] }
-}
-
-function updateFooter(results) {
-  setTimeout(function() {
-    const el = document.getElementById('source-info')
-    const totalEl = document.getElementById('source-total')
-    if (!el) { console.log('source-info not found'); return }
-    const html = SOURCES.map(function(s, i) {
-      const count = results && results[i] ? results[i].length : 0
-      const url = 'https://docs.google.com/spreadsheets/d/' + s.id + '/edit'
-      return '<a href="' + url + '" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 12px;text-decoration:none;font-size:11px;color:#334155;">📊 <b>' + s.sheet + '</b>&nbsp;<span style="color:#64748b;">' + count.toLocaleString() + ' แถว</span>&nbsp;<span style="color:#1a6ef7;">↗</span></a>'
-    }).join('')
-    el.innerHTML = html
-    if (totalEl) totalEl.textContent = '| รวม ' + allData.length.toLocaleString() + ' แถว'
-  }, 500)
-}
-
+// ========== ดึงข้อมูลจาก Apps Script แทน Sheets API ==========
 async function fetchData() {
   try {
-    const results = await Promise.all(SOURCES.map(fetchSource))
-    allData = results.flat()
-    // cache ยอดรวมทั้งปี
+    document.getElementById('last-update').textContent = 'กำลังโหลด...'
+    const res = await fetch(APPS_SCRIPT_URL)
+    const json = await res.json()
+
+    allData = []
+    SHEET_NAMES.forEach((sheetName, sourceIdx) => {
+      const rows = json[sheetName]
+      if (!rows || rows.length < 2) return
+      const hdrs = rows[0].map(h => String(h).trim())
+      for (let i = 1; i < rows.length; i++) {
+        const r = rows[i]
+        const o = {}
+        hdrs.forEach((h, j) => o[h] = String(r[j] !== undefined ? r[j] : '').trim())
+        o['_source'] = sourceIdx
+
+        // Normalize พนักงาน
+        if (o['พนักงาน']) {
+          let n = o['พนักงาน']
+          n = n.replace(/[ \u200b\s]+/g, ' ').trim()
+          n = n.replace(/^(\d) /, (m, d) => '0' + d + ' ')
+          n = n.replace('นำฟ้า', 'น้ำฟ้า')
+          o['พนักงาน'] = n
+        }
+
+        // Admin Orders mapping
+        if (sheetName === 'Admin Orders') {
+          if (!o['พนักงาน'] && o['ชื่อ']) o['พนักงาน'] = o['ชื่อ']
+          if (!o['วันที่'] && o['วัน เดือน ปี']) o['วันที่'] = o['วัน เดือน ปี']
+          if (o['ทีม'] === 'Admins') o['ทีม'] = 'Admin'
+          if (!o['ทีม']) o['ทีม'] = 'Admin'
+        }
+
+        if (o['พนักงาน'] && o['พนักงาน'] !== '') allData.push(o)
+      }
+    })
+
+    // cache ยอดปีนี้
     const currentYear = new Date().getFullYear()
     window._cachedYearTotal = allData.filter(r => {
       const ts = parseTs(r['วันที่'])
       if (!ts) return false
       return new Date(ts).getFullYear() === currentYear
     }).reduce((s,r) => s + num(r['ยอดรวม']), 0)
+
     populateFilters()
     applyFilters()
 
-    setTimeout(autoFitKPI, 50)
-    document.getElementById('last-update').textContent = 'อัพเดต ' + new Date().toLocaleTimeString('th-TH') + ' (' + allData.length + ' แถว)'
-    // แสดงข้อมูลแหล่งที่มาใน footer
-    updateFooter(results)
-  } catch(e) { console.error(e) }
+    const now = new Date().toLocaleTimeString('th-TH')
+    document.getElementById('last-update').textContent = 'อัพเดต ' + now + ' (' + allData.length + ' แถว)'
+    const topEl = document.getElementById('last-update-top')
+    if (topEl) topEl.textContent = 'อัพเดต ' + now + ' (' + allData.length + ' แถว)'
+
+    // แสดง footer
+    const sourceInfo = document.getElementById('source-info')
+    if (sourceInfo) {
+      sourceInfo.innerHTML = SHEET_NAMES.map(name => {
+        const cnt = allData.filter(r => {
+          const idx = SHEET_NAMES.indexOf(name)
+          return r['_source'] === idx
+        }).length
+        return `<span style="display:inline-flex;align-items:center;gap:6px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:4px 12px;font-size:11px;color:#334155;">📊 <b>${name}</b>&nbsp;<span style="color:#64748b;">${cnt.toLocaleString()} แถว</span></span>`
+      }).join('')
+    }
+    const totalEl = document.getElementById('source-total')
+    if (totalEl) totalEl.textContent = '| รวม ' + allData.length.toLocaleString() + ' แถว'
+
+  } catch(e) {
+    console.error('fetch error:', e)
+    document.getElementById('last-update').textContent = 'โหลดข้อมูลไม่สำเร็จ ลองรีเฟรช'
+  }
 }
 
 function populateFilters() {
-  // ไม่ overwrite team dropdown เพราะมี CRM (custom option) อยู่แล้ว
-  const tsel = document.getElementById('filter-team')
-  const tcur = tsel.value
-
   const selectedTeam = document.getElementById('filter-team').value
-  const agentData = selectedTeam
-    ? allData.filter(r => r['ทีม'] === selectedTeam)
-    : allData
+  const agentData = selectedTeam ? allData.filter(r => r['ทีม'] === selectedTeam) : allData
   const agents = [...new Set(agentData.map(r => r['พนักงาน']).filter(Boolean))].sort()
   const sel = document.getElementById('filter-agent')
   const cur = sel.value
@@ -591,7 +535,6 @@ function getFiltered() {
 }
 
 function applyFilters() {
-  // defer to avoid blocking UI
   if (window._applyFiltersTimer) clearTimeout(window._applyFiltersTimer)
   window._applyFiltersTimer = setTimeout(_doApplyFilters, 0)
 }
@@ -602,18 +545,18 @@ function _doApplyFilters() {
   const orders = data.filter(r => num(r['ยอดรวม']) > 0).length
   const mainOrders = data.filter(r => num(r['ยอดรวม']) > 0 && r['Up'] !== '1').length
   const basket = mainOrders > 0 ? totalSales / mainOrders : 0
-  const total = data.length
-  const closeRate = total > 0 ? (orders / total * 100) : 0
 
   document.getElementById('kpi-total').textContent = fmt(totalSales)
+  document.getElementById('kpi-orders').textContent = orders
+  document.getElementById('kpi-basket').textContent = fmt(basket)
 
-  // อัพเดตหลอดยอดขายสะสมทั้งปี — ดึงเฉพาะ CRM Orders (source แรก)
+  // Progress bar
   const TARGET = 200000000
   const MILESTONES = [
-    { key:'emerald', val:30000000,  label:'💎 Emerald', remId:'ml-emerald-rem' },
-    { key:'diamond', val:50000000,  label:'💎 Diamond', remId:'ml-diamond-rem' },
-    { key:'100',     val:100000000, label:'100M',       remId:'ml-100-rem' },
-    { key:'150',     val:150000000, label:'150M',       remId:'ml-150-rem' },
+    { key:'emerald', val:30000000,  remId:'ml-emerald-rem' },
+    { key:'diamond', val:50000000,  remId:'ml-diamond-rem' },
+    { key:'100',     val:100000000, remId:'ml-100-rem' },
+    { key:'150',     val:150000000, remId:'ml-150-rem' },
   ]
   const yearTotal = _cachedYearTotal
   const pct = Math.min(yearTotal / TARGET * 100, 100)
@@ -626,8 +569,6 @@ function _doApplyFilters() {
     if (pctEl) pctEl.textContent = pct.toFixed(1) + '%'
     if (valEl) valEl.textContent = fmt(yearTotal) + ' บาท'
     if (remEl) remEl.textContent = 'คงเหลือถึงเป้า ' + fmt(Math.max(TARGET - yearTotal, 0)) + ' บาท'
-
-    // milestone positions
     MILESTONES.forEach(m => {
       const leftPct = (m.val / TARGET * 100).toFixed(2) + '%'
       const lineEl = document.getElementById('ml-' + m.key + '-line')
@@ -641,10 +582,8 @@ function _doApplyFilters() {
       }
     })
   }
-  document.getElementById('kpi-orders').textContent = orders
-  document.getElementById('kpi-basket').textContent = fmt(basket)
 
-  // Upsell KPI
+  // Upsell
   const upsellRows = data.filter(r => r['Up'] === '1')
   const upsellOrders = upsellRows.length
   const upsellAmt = upsellRows.reduce((s,r) => s + num(r['ยอดอัพ'] || r['ยอดรวม']), 0)
@@ -652,23 +591,21 @@ function _doApplyFilters() {
   const upsellAmtEl = document.getElementById('kpi-upsell-amt')
   if (upsellOrdEl) upsellOrdEl.textContent = upsellOrders
   if (upsellAmtEl) upsellAmtEl.textContent = upsellAmt >= 1000000 ? shortFmt(upsellAmt) : fmt(upsellAmt)
-  document.getElementById('s-total').textContent = total
+
+  // สถิติการโทร
+  const totalReturn = data.reduce((s,r) => s + parseInt(r['จำนวนตีกลับ'] || 0), 0)
+  document.getElementById('s-total').textContent = data.length
   document.getElementById('s-reach').textContent = data.filter(r => r['การชำระเงิน'] === 'COD').length
   document.getElementById('s-talk').textContent = '—'
-  document.getElementById('s-out').textContent = total
+  document.getElementById('s-out').textContent = data.length
+  document.getElementById('s-return').textContent = totalReturn || '—'
+  document.getElementById('s-return-rate').textContent = data.length > 0 && totalReturn > 0 ? (totalReturn / data.length * 100).toFixed(1) + '%' : '—'
 
-  // ตีกลับ
-  const totalReturn = data.reduce((s,r) => s + parseInt(r['จำนวนตีกลับ'] || 0), 0)
-  const returnEl = document.getElementById('s-return')
-  const returnRateEl = document.getElementById('s-return-rate')
-  if (returnEl) returnEl.textContent = totalReturn || '—'
-  if (returnRateEl) returnRateEl.textContent = data.length > 0 && totalReturn > 0 ? (totalReturn / data.length * 100).toFixed(1) + '%' : '—'
-
+  // กราฟยอดขายรายวัน
   const byDate = {}
   data.forEach(r => {
     const raw = r['วันที่'] ? r['วันที่'].toString().split(' ')[0] : ''
     if (!raw) return
-    // normalize to YYYY-MM-DD
     let d = raw
     if (raw.indexOf('/') >= 0) {
       const p = raw.split('/')
@@ -681,17 +618,14 @@ function _doApplyFilters() {
     }
     byDate[d] = (byDate[d] || 0) + num(r['ยอดรวม'])
   })
-  const sorted = Object.keys(byDate).sort((a, b) => (parseTs(a) || 0) - (parseTs(b) || 0))
-
-  // ถ้าดูทั้งปี (>60 วัน) → group by เดือน
+  const sorted = Object.keys(byDate).sort((a, b) => (parseTs(a)||0) - (parseTs(b)||0))
   const dayCount = sorted.length
   let chartLabels, chartVals
   if (dayCount > 60) {
     const byMonth = {}
     sorted.forEach(d => {
-      var yr, mo
+      let yr, mo
       if (d.indexOf('-') >= 0) { const p = d.split('-'); yr=p[0]; mo=p[1] }
-      else if (d.indexOf('/') >= 0) { const p = d.split('/'); yr=p[2]; mo=String(parseInt(p[1])).padStart(2,'0') }
       else return
       const key = yr+'-'+mo
       byMonth[key] = (byMonth[key] || 0) + byDate[d]
@@ -703,14 +637,13 @@ function _doApplyFilters() {
   } else {
     chartLabels = sorted.map(d => {
       if (d.indexOf('-')>=0) { const p=d.split('-'); return parseInt(p[2]) }
-      if (d.indexOf('/')>=0) { return parseInt(d.split('/')[0]) }
       return d
     })
     chartVals = sorted.map(d => byDate[d])
   }
   renderLine(chartLabels, chartVals)
 
-  // Re Pie Chart
+  // Re Pie
   const reGroups = { '2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8+':0 }
   const reSalesGroups = { '2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8+':0 }
   data.forEach(r => {
@@ -727,6 +660,7 @@ function _doApplyFilters() {
   const reColors = reLabels.map((_,i) => reColorsArr[i % reColorsArr.length])
   renderRePie(reLabels, reVals, reSalesVals, reColors)
 
+  // สินค้า
   const pm = {}
   data.forEach(r => {
     const p = r['สินค้า']; if (!p) return
@@ -815,16 +749,11 @@ function renderLine(labels, vals) {
     type: 'line',
     data: {labels, datasets: [{label: 'ยอดขาย', data: vals, backgroundColor: 'rgba(26,110,247,0.1)', borderColor: '#1a6ef7', borderWidth: 2, fill: true, tension: 0.4, pointBackgroundColor: '#1a6ef7', pointRadius: 0, pointHoverRadius: 0}]},
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) { return ' ยอดขาย: ' + ctx.parsed.y.toLocaleString('th-TH') + ' บาท' }
-          }
-        }
+        tooltip: { callbacks: { label: c => ' ยอดขาย: ' + c.parsed.y.toLocaleString('th-TH') + ' บาท' } }
       },
       scales: {
         x: { ticks: { color: '#475569', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.06)' } },
@@ -834,27 +763,26 @@ function renderLine(labels, vals) {
   })
 }
 
-
 function renderPie(canvasId, legendId, labels, vals) {
   const el = document.getElementById(canvasId); if (!el) return
   const ctx = el.getContext('2d')
   if (pieChart) pieChart.destroy()
   if (!labels.length) return
   const bgColors = labels.map((l, i) => getProductColor(l, i))
-  const chart = new Chart(ctx, {
+  pieChart = new Chart(ctx, {
     type: 'doughnut',
     data: {labels, datasets: [{data: vals, backgroundColor: bgColors, borderWidth: 0}]},
     options: {responsive: true, maintainAspectRatio: false, plugins: {legend: {display: false}}, cutout: '65%'}
   })
-  pieChart = chart
-  document.getElementById(legendId).innerHTML = labels.map((l, i) => `<div class="legend-item"><div class="legend-dot" style="background:${getProductColor(l, i)}"></div>${l}</div>`).join('')
+  document.getElementById(legendId).innerHTML = labels.map((l, i) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${getProductColor(l, i)}"></div>${l}</div>`
+  ).join('')
 }
-fetchData().then(() => {
-  setQuick('month')
-})
+
+// เริ่มโหลด
+fetchData().then(() => { setQuick('month') })
 setInterval(fetchData, 30000)
 </script>
-
 
 <div style="background:var(--bg2);border-top:1px solid var(--border);padding:12px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
   <span style="font-size:11px;color:var(--text3);">📋 แหล่งข้อมูล:</span>
