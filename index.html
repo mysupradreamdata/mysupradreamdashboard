@@ -251,12 +251,30 @@
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;">
     <div class="card">
       <div class="card-title">CRM ยอดรี</div>
-      <div style="display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center;">
-        <div style="position:relative;height:220px;"><canvas id="reOrderPie"></canvas></div>
-        <div><div class="legend" id="re-order-legend" style="flex-direction:column;gap:8px;"></div></div>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;align-items:center;">
+        <div style="position:relative;height:180px;"><canvas id="reOrderPie"></canvas></div>
+        <div><div class="legend" id="re-order-legend" style="flex-direction:column;gap:6px;"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Admin — ยอดขาย เก่า vs ใหม่</div>
+      <div style="position:relative;height:180px;"><canvas id="adminSalesPie"></canvas></div>
+      <div style="margin-top:8px;">
+        <div id="admin-sales-legend" class="legend" style="flex-direction:column;gap:6px;"></div>
+        <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px;">
+            <span style="font-weight:600;">💰 ยอดรวม Admin</span><span id="admin-total-sales" style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:#0ea86a;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px;">
+            <span>👤 ลูกค้าใหม่</span><span id="admin-new-cust" style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#f59e0b;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);">
+            <span>👤 ลูกค้าเก่า</span><span id="admin-old-cust" style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#7c3aed;">—</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="card">
@@ -306,7 +324,7 @@ function getProductColor(name, index) {
   return COLORS[index % COLORS.length]
 }
 
-let allData = [], salesChart = null, pieChart = null, rePieChart = null, teamPieChart = null
+let allData = [], salesChart = null, pieChart = null, rePieChart = null, teamPieChart = null, adminSalesPie = null
 window._cachedYearTotal = 0
 
 function parseTs(str) {
@@ -690,6 +708,67 @@ function _doApplyFilters() {
   const teamColorMap = { 'VVIP': '#f59e0b', 'ทีมอเวนเจอร์': '#1a6ef7', 'Admin': '#0ea86a' }
   const teamColors = teamLabels.map(t => teamColorMap[t] || '#94a3b8')
   renderTeamPie(teamLabels, teamVals, teamColors)
+
+  // Admin ลูกค้าเก่า-ใหม่
+  const adminData = allData.filter(r => r['_source'] === 2) // Admin Orders source index 2
+  let adminNewCust = 0, adminOldCust = 0, adminNewSales = 0, adminOldSales = 0
+
+  // apply date filter only
+  adminData.forEach(r => {
+    if (filterFrom || filterTo) {
+      const ts = parseTs(r['วัน เดือน ปี'] || r['วันที่'])
+      if (ts === null) return
+      if (filterFrom && ts < filterFrom) return
+      if (filterTo && ts > filterTo) return
+    }
+    const newCust = parseFloat(r['ลค ใหม่'] || r['ลคใหม่'] || 0) || 0
+    const oldCust = parseFloat(r['ลคเก่า'] || 0) || 0
+    const newSales = parseFloat(r['ยอด ลคใหม่'] || r['ยอดลคใหม่'] || 0) || 0
+    const oldSales = parseFloat(r['ยอด ลคเก่า'] || r['ยอดลคเก่า'] || 0) || 0
+    adminNewCust += newCust
+    adminOldCust += oldCust
+    adminNewSales += newSales
+    adminOldSales += oldSales
+  })
+
+  renderAdminPie('adminSalesPie', 'admin-sales-legend',
+    ['ยอดขายใหม่', 'ยอดขายเก่า'],
+    [adminNewSales, adminOldSales],
+    ['#f59e0b', '#7c3aed'], 'บาท', adminSalesPie)
+
+  // แสดงจำนวนลูกค้าเป็นตัวเลข
+  const newCustEl = document.getElementById('admin-new-cust')
+  const oldCustEl = document.getElementById('admin-old-cust')
+  const totalAdminEl = document.getElementById('admin-total-sales')
+  if (newCustEl) newCustEl.textContent = fmt(adminNewCust) + ' คน'
+  if (oldCustEl) oldCustEl.textContent = fmt(adminOldCust) + ' คน'
+  if (totalAdminEl) totalAdminEl.textContent = fmt(adminNewSales + adminOldSales) + ' บาท'
+}
+
+function renderAdminPie(canvasId, legendId, labels, vals, colors, unit, chartRef) {
+  const el = document.getElementById(canvasId); if (!el) return
+  if (adminSalesPie) { adminSalesPie.destroy(); adminSalesPie = null }
+  const total = vals.reduce((a,b)=>a+b,0)
+  if (!total) {
+    document.getElementById(legendId).innerHTML = '<div style="color:var(--text3);font-size:12px;">ไม่มีข้อมูล</div>'
+    return
+  }
+  const chart = new Chart(el.getContext('2d'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: vals, backgroundColor: colors, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` ${c.label}: ${fmt(c.raw)} ${unit} (${(c.raw/total*100).toFixed(1)}%)` } }
+      },
+      cutout: '60%'
+    }
+  })
+  adminSalesPie = chart
+  document.getElementById(legendId).innerHTML = labels.map((l,i) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div>${l}: <strong>${fmt(vals[i])}</strong> ${unit} (${total > 0 ? (vals[i]/total*100).toFixed(1) : 0}%)</div>`
+  ).join('')
 }
 
 function renderTeamPie(labels, vals, colors) {
