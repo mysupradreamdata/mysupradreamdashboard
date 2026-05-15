@@ -235,6 +235,12 @@
     </div>
   </div>
 
+  <!-- Leaderboard พนักงาน CRM -->
+  <div class="card">
+    <div class="card-title">🏆 ยอดขายพนักงาน CRM — เรียงจากมากไปน้อย</div>
+    <div id="agent-leaderboard" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;"></div>
+  </div>
+
   <div class="two-col">
     <div class="card">
       <div class="card-title">ยอดขายรายวัน</div>
@@ -696,6 +702,43 @@ function _doApplyFilters() {
   const pieL = prods.slice(0, 7).map(([k]) => k)
   const pieV = prods.slice(0, 7).map(([,v]) => v.total)
   renderPie('pieChart', 'pie-legend', pieL, pieV)
+
+  // Leaderboard พนักงาน
+  const agentMap = {}
+  data.forEach(r => {
+    if (!r['พนักงาน']) return
+    const a = stripNum(r['พนักงาน'])
+    const team = r['ทีม'] || ''
+    if (!agentMap[a]) agentMap[a] = { total: 0, orders: 0, team }
+    agentMap[a].total += num(r['ยอดรวม'])
+    if (num(r['ยอดรวม']) > 0) agentMap[a].orders++
+  })
+  const agentList = Object.entries(agentMap).sort((a,b) => b[1].total - a[1].total)
+  const maxTotal = agentList.length ? agentList[0][1].total : 1
+  const teamColor = { 'VVIP': '#f59e0b', 'ทีมอเวนเจอร์': '#1a6ef7', 'Admin': '#0ea86a' }
+  const medals = ['🥇','🥈','🥉']
+  const lb = document.getElementById('agent-leaderboard')
+  if (lb) {
+    lb.innerHTML = agentList.length ? agentList.map(([name, v], i) => {
+      const pct = maxTotal > 0 ? (v.total / maxTotal * 100).toFixed(1) : 0
+      const color = teamColor[v.team] || '#94a3b8'
+      const medal = i < 3 ? medals[i] : `<span style="font-size:11px;color:var(--text3);min-width:20px;display:inline-block;">${i+1}</span>`
+      return `<div style="background:var(--bg3);border-radius:10px;padding:10px 12px;border:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span style="font-size:16px;">${medal}</span>
+          <span style="font-size:12px;font-weight:600;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}</span>
+          <span style="font-size:10px;background:${color}22;color:${color};border-radius:4px;padding:1px 6px;font-weight:600;">${v.team||'—'}</span>
+        </div>
+        <div style="background:rgba(0,0,0,0.08);border-radius:999px;height:6px;overflow:hidden;margin-bottom:5px;">
+          <div style="height:100%;width:${pct}%;background:${color};border-radius:999px;transition:width .5s;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:${color};">${fmt(v.total)}</span>
+          <span style="font-size:10px;color:var(--text3);">${v.orders} ออเดอร์</span>
+        </div>
+      </div>`
+    }).join('') : '<div class="empty">ไม่มีข้อมูล</div>'
+  }
 
   // Team pie
   const teamMap = {}
