@@ -487,10 +487,13 @@ async function fetchData() {
           if (!o['วันที่'] && o['วัน เดือน ปี']) o['วันที่'] = o['วัน เดือน ปี']
           if (o['ทีม'] === 'Admins') o['ทีม'] = 'Admin'
           if (!o['ทีม']) o['ทีม'] = 'Admin'
-          // คำนวณยอดรวม Admin จาก ยอด ลคใหม่ + ยอด ลคเก่า
-          const newS = parseFloat(o['ยอด ลคใหม่'] || 0) || 0
-          const oldS = parseFloat(o['ยอด ลคเก่า'] || 0) || 0
-          if (newS + oldS > 0) o['ยอดรวม'] = String(newS + oldS)
+          // ยอดรวม Admin ดึงจากคอลัมน์ J โดยตรง ถ้าไม่มีค่อย fallback ไป ลคใหม่+ลคเก่า
+          const directTotal = parseFloat(o['ยอดรวม'] || 0) || 0
+          if (directTotal <= 0) {
+            const newS = parseFloat(o['ยอด ลคใหม่'] || 0) || 0
+            const oldS = parseFloat(o['ยอด ลคเก่า'] || 0) || 0
+            if (newS + oldS > 0) o['ยอดรวม'] = String(newS + oldS)
+          }
         }
 
         if (o['พนักงาน'] && o['พนักงาน'] !== '') allData.push(o)
